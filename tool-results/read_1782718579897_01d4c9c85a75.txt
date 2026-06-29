@@ -1,0 +1,1005 @@
+     1→     1→'use client';
+     2→     2→
+     3→     3→import { useState, useRef } from 'react';
+     4→     4→import { motion, useInView } from 'framer-motion';
+     5→     5→import { Button } from '@/components/ui/button';
+     6→     6→import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+     7→     7→import { Input } from '@/components/ui/input';
+     8→     8→import { Label } from '@/components/ui/label';
+     9→     9→import { Textarea } from '@/components/ui/textarea';
+    10→    10→import {
+    11→    11→  Select,
+    12→    12→  SelectContent,
+    13→    13→  SelectItem,
+    14→    14→  SelectTrigger,
+    15→    15→  SelectValue,
+    16→    16→} from '@/components/ui/select';
+    17→    17→import { Badge } from '@/components/ui/badge';
+    18→    18→import { useToast } from '@/hooks/use-toast';
+    19→    19→import {
+    20→    20→  HardDrive,
+    21→    21→  Usb,
+    22→    22→  MemoryStick,
+    23→    23→  Database,
+    24→    24→  Shield,
+    25→    25→  ShieldCheck,
+    26→    26→  Clock,
+    27→    27→  Phone,
+    28→    28→  Mail,
+    29→    29→  MapPin,
+    30→    30→  ChevronRight,
+    31→    31→  CheckCircle2,
+    32→    32→  Zap,
+    33→    33→  Headphones,
+    34→    34→  Award,
+    35→    35→  Server,
+    36→    36→  Disc3,
+    37→    37→  FileRestore,
+    38→    38→  ArrowRight,
+    39→    39→  Menu,
+    40→    40→  X,
+    41→    41→  Star,
+    42→    42→} from 'lucide-react';
+    43→    43→
+    44→    44→/* ─── Navigation ─── */
+    45→    45→function Navbar() {
+    46→    46→  const [open, setOpen] = useState(false);
+    47→    47→  const links = [
+    48→    48→    { label: 'Services', href: '#services' },
+    49→    49→    { label: 'Why Us', href: '#why-us' },
+    50→    50→    { label: 'Process', href: '#process' },
+    51→    51→    { label: 'Contact', href: '#contact' },
+    52→    52→  ];
+    53→    53→
+    54→    54→  return (
+    55→    55→    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+    56→    56→      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    57→    57→        <a href="#" className="flex items-center gap-2">
+    58→    58→          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+    59→    59→            <Database className="h-5 w-5 text-primary-foreground" />
+    60→    60→          </div>
+    61→    61→          <span className="text-lg font-bold tracking-tight">
+    62→    62→            Data<span className="text-primary">Rescue</span> Pro
+    63→    63→          </span>
+    64→    64→        </a>
+    65→    65→
+    66→    66→        <nav className="hidden items-center gap-8 md:flex">
+    67→    67→          {links.map((link) => (
+    68→    68→            <a
+    69→    69→              key={link.href}
+    70→    70→              href={link.href}
+    71→    71→              className="text-sm text-muted-foreground transition-colors hover:text-primary"
+    72→    72→            >
+    73→    73→              {link.label}
+    74→    74→            </a>
+    75→    75→          ))}
+    76→    76→          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+    77→    77→            <a href="#contact">Get Free Quote</a>
+    78→    78→          </Button>
+    79→    79→        </nav>
+    80→    80→
+    81→    81→        <button
+    82→    82→          className="md:hidden"
+    83→    83→          onClick={() => setOpen(!open)}
+    84→    84→          aria-label="Toggle menu"
+    85→    85→        >
+    86→    86→          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+    87→    87→        </button>
+    88→    88→      </div>
+    89→    89→
+    90→    90→      {open && (
+    91→    91→        <motion.div
+    92→    92→          initial={{ opacity: 0, y: -10 }}
+    93→    93→          animate={{ opacity: 1, y: 0 }}
+    94→    94→          className="border-b border-border/50 bg-background/95 backdrop-blur-xl md:hidden"
+    95→    95→        >
+    96→    96→          <nav className="flex flex-col gap-1 px-4 py-4">
+    97→    97→            {links.map((link) => (
+    98→    98→              <a
+    99→    99→                key={link.href}
+   100→   100→                href={link.href}
+   101→   101→                onClick={() => setOpen(false)}
+   102→   102→                className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+   103→   103→              >
+   104→   104→                {link.label}
+   105→   105→              </a>
+   106→   106→            ))}
+   107→   107→            <Button size="sm" className="mt-2 bg-primary text-primary-foreground" asChild>
+   108→   108→              <a href="#contact" onClick={() => setOpen(false)}>Get Free Quote</a>
+   109→   109→            </Button>
+   110→   110→          </nav>
+   111→   111→        </motion.div>
+   112→   112→      )}
+   113→   113→    </header>
+   114→   114→  );
+   115→   115→}
+   116→   116→
+   117→   117→/* ─── Hero Section ─── */
+   118→   118→function HeroSection() {
+   119→   119→  return (
+   120→   120→    <section className="hero-bg grid-bg relative flex min-h-screen items-center overflow-hidden pt-16">
+   121→   121→      <div className="absolute inset-0 overflow-hidden">
+   122→   122→        <div className="animate-float absolute -top-20 -left-20 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
+   123→   123→        <div className="animate-float-delayed absolute -right-20 top-1/3 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+   124→   124→        <div className="animate-pulse-glow absolute bottom-20 left-1/3 h-2 w-2 rounded-full bg-primary" />
+   125→   125→        <div className="animate-pulse-glow absolute top-40 right-1/4 h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ animationDelay: '1s' }} />
+   126→   126→        <div className="animate-pulse-glow absolute top-60 left-1/4 h-1 w-1 rounded-full bg-teal-400" style={{ animationDelay: '2s' }} />
+   127→   127→      </div>
+   128→   128→
+   129→   129→      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+   130→   130→        <div className="grid items-center gap-12 lg:grid-cols-2">
+   131→   131→          <motion.div
+   132→   132→            initial={{ opacity: 0, y: 30 }}
+   133→   133→            animate={{ opacity: 1, y: 0 }}
+   134→   134→            transition={{ duration: 0.7 }}
+   135→   135→          >
+   136→   136→            <Badge variant="outline" className="mb-6 border-primary/30 text-primary">
+   137→   137→              <ShieldCheck className="mr-1.5 h-3.5 w-3.5" />
+   138→   138→              Trusted by 10,000+ Customers
+   139→   139→            </Badge>
+   140→   140→            <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl">
+   141→   141→              Recover Your{' '}
+   142→   142→              <span className="gradient-text">Lost Data</span>{' '}
+   143→   143→              With Expert Precision
+   144→   144→            </h1>
+   145→   145→            <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
+   146→   146→              From crashed hard drives to corrupted pendrives, our certified specialists
+   147→   147→              recover data from any storage device. No data, no charge — guaranteed.
+   148→   148→            </p>
+   149→   149→            <div className="flex flex-col gap-4 sm:flex-row">
+   150→   150→              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-base" asChild>
+   151→   151→                <a href="#contact">
+   152→   152→                  Get Free Consultation
+   153→   153→                  <ArrowRight className="ml-2 h-4 w-4" />
+   154→   154→                </a>
+   155→   155→              </Button>
+   156→   156→              <Button size="lg" variant="outline" className="border-border text-base" asChild>
+   157→   157→                <a href="#services">
+   158→   158→                  Our Services
+   159→   159→                  <ChevronRight className="ml-1 h-4 w-4" />
+   160→   160→                </a>
+   161→   161→              </Button>
+   162→   162→            </div>
+   163→   163→
+   164→   164→            <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+   165→   165→              <div className="flex items-center gap-2">
+   166→   166→                <CheckCircle2 className="h-4 w-4 text-primary" />
+   167→   167→                <span>No Data, No Fee</span>
+   168→   168→              </div>
+   169→   169→              <div className="flex items-center gap-2">
+   170→   170→                <CheckCircle2 className="h-4 w-4 text-primary" />
+   171→   171→                <span>Same-Day Diagnosis</span>
+   172→   172→              </div>
+   173→   173→              <div className="flex items-center gap-2">
+   174→   174→                <CheckCircle2 className="h-4 w-4 text-primary" />
+   175→   175→                <span>100% Confidential</span>
+   176→   176→              </div>
+   177→   177→            </div>
+   178→   178→          </motion.div>
+   179→   179→
+   180→   180→          <motion.div
+   181→   181→            initial={{ opacity: 0, scale: 0.9 }}
+   182→   182→            animate={{ opacity: 1, scale: 1 }}
+   183→   183→            transition={{ duration: 0.7, delay: 0.2 }}
+   184→   184→            className="hidden lg:flex lg:justify-center"
+   185→   185→          >
+   186→   186→            <div className="glow-teal relative">
+   187→   187→              <div className="grid grid-cols-2 gap-4">
+   188→   188→                {[
+   189→   189→                  { icon: HardDrive, label: 'HDD Recovery', color: 'text-teal-400' },
+   190→   190→                  { icon: Usb, label: 'Pendrive Recovery', color: 'text-emerald-400' },
+   191→   191→                  { icon: MemoryStick, label: 'Memory Card', color: 'text-cyan-400' },
+   192→   192→                  { icon: Server, label: 'RAID Recovery', color: 'text-teal-300' },
+   193→   193→                  { icon: Disc3, label: 'SSD Recovery', color: 'text-green-400' },
+   194→   194→                  { icon: FileRestore, label: 'File Recovery', color: 'text-emerald-300' },
+   195→   195→                ].map((item, i) => (
+   196→   196→                  <motion.div
+   197→   197→                    key={item.label}
+   198→   198→                    initial={{ opacity: 0, y: 20 }}
+   199→   199→                    animate={{ opacity: 1, y: 0 }}
+   200→   200→                    transition={{ delay: 0.4 + i * 0.1 }}
+   201→   201→                  >
+   202→   202→                    <Card className="border-border/50 bg-card/80 backdrop-blur-sm card-hover cursor-default">
+   203→   203→                      <CardContent className="flex flex-col items-center gap-3 p-6">
+   204→   204→                        <item.icon className={`h-10 w-10 ${item.color}`} />
+   205→   205→                        <span className="text-sm font-medium">{item.label}</span>
+   206→   206→                      </CardContent>
+   207→   207→                    </Card>
+   208→   208→                  </motion.div>
+   209→   209→                ))}
+   210→   210→              </div>
+   211→   211→            </div>
+   212→   212→          </motion.div>
+   213→   213→        </div>
+   214→   214→
+   215→   215→        {/* Stats bar */}
+   216→   216→        <motion.div
+   217→   217→          initial={{ opacity: 0, y: 20 }}
+   218→   218→          animate={{ opacity: 1, y: 0 }}
+   219→   219→          transition={{ delay: 0.6 }}
+   220→   220→          className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4"
+   221→   221→        >
+   222→   222→          {[
+   223→   223→            { value: '10,000+', label: 'Recoveries Done' },
+   224→   224→            { value: '98.5%', label: 'Success Rate' },
+   225→   225→            { value: '15+', label: 'Years Experience' },
+   226→   226→            { value: '24/7', label: 'Emergency Support' },
+   227→   227→          ].map((stat) => (
+   228→   228→            <div key={stat.label} className="rounded-xl border border-border/50 bg-card/50 p-4 text-center backdrop-blur-sm">
+   229→   229→              <div className="text-2xl font-bold text-primary sm:text-3xl">{stat.value}</div>
+   230→   230→              <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</div>
+   231→   231→            </div>
+   232→   232→          ))}
+   233→   233→        </motion.div>
+   234→   234→      </div>
+   235→   235→    </section>
+   236→   236→  );
+   237→   237→}
+   238→   238→
+   239→   239→/* ─── Services Section ─── */
+   240→   240→const services = [
+   241→   241→  {
+   242→   242→    icon: Usb,
+   243→   243→    title: 'Pendrive Data Recovery',
+   244→   244→    description:
+   245→   245→      'Recover files from corrupted, formatted, or physically damaged USB pendrives. We handle all brands and capacities — from 2GB to 1TB flash drives — recovering photos, documents, videos, and more.',
+   246→   246→    features: ['Formatted drive recovery', 'RAW file system fix', 'Physically damaged pen drives', 'All USB brands supported'],
+   247→   247→  },
+   248→   248→  {
+   249→   249→    icon: HardDrive,
+   250→   250→    title: 'HDD Data Recovery',
+   251→   251→    description:
+   252→   252→      'Expert recovery from crashed, clicking, or dead hard disk drives. Our cleanroom lab handles head crashes, bad sectors, firmware corruption, and mechanical failures for both internal and external HDDs.',
+   253→   253→    features: ['Clicking / dead HDD', 'Head crash recovery', 'Bad sector handling', 'All HDD brands & sizes'],
+   254→   254→  },
+   255→   255→  {
+   256→   256→    icon: MemoryStick,
+   257→   257→    title: 'Memory Card Recovery',
+   258→   258→    description:
+   259→   259→      'Retrieve lost photos, videos, and files from SD cards, microSD cards, CF cards, and all other memory card formats used in cameras, phones, and drones.',
+   260→   260→    features: ['SD / microSD cards', 'CF / XD cards', 'Corrupted card recovery', 'Camera & drone cards'],
+   261→   261→  },
+   262→   262→  {
+   263→   263→    icon: Disc3,
+   264→   264→    title: 'SSD Data Recovery',
+   265→   265→    description:
+   266→   266→      'Advanced NAND chip-level recovery for solid state drives. We recover data from failed SSDs, damaged controllers, and encrypted drives with cutting-edge tools.',
+   267→   267→    features: ['NAND chip recovery', 'Firmware repair', 'Encrypted SSD support', 'All form factors'],
+   268→   268→  },
+   269→   269→  {
+   270→   270→    icon: Server,
+   271→   271→    title: 'RAID Recovery',
+   272→   272→    description:
+   273→   273→      'Complete RAID array reconstruction and data recovery for RAID 0, 1, 5, 6, 10, and nested configurations. We handle multi-disk failures and controller issues.',
+   274→   274→    features: ['RAID 0/1/5/6/10', 'Multi-disk failure', 'Controller issues', 'NAS & server recovery'],
+   275→   275→  },
+   276→   276→  {
+   277→   277→    icon: Database,
+   278→   278→    title: 'Database & Server Recovery',
+   279→   279→    description:
+   280→   280→      'Specialized recovery for corrupt databases (MySQL, PostgreSQL, SQL Server), virtual machines, and enterprise server environments with minimal downtime.',
+   281→   281→    features: ['SQL database repair', 'VM recovery', 'Exchange server', 'Enterprise solutions'],
+   282→   282→  },
+   283→   283→];
+   284→   284→
+   285→   285→function ServicesSection() {
+   286→   286→  const ref = useRef(null);
+   287→   287→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   288→   288→
+   289→   289→  return (
+   290→   290→    <section id="services" className="relative py-24 sm:py-32" ref={ref}>
+   291→   291→      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   292→   292→        <motion.div
+   293→   293→          initial={{ opacity: 0, y: 20 }}
+   294→   294→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   295→   295→          transition={{ duration: 0.5 }}
+   296→   296→          className="mb-16 text-center"
+   297→   297→        >
+   298→   298→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
+   299→   299→            Our Services
+   300→   300→          </Badge>
+   301→   301→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   302→   302→            Complete Data Recovery <span className="gradient-text">Solutions</span>
+   303→   303→          </h2>
+   304→   304→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   305→   305→            We recover data from every type of storage device. Whether it&apos;s a simple
+   306→   306→            deleted file or a complex RAID failure, our experts have you covered.
+   307→   307→          </p>
+   308→   308→        </motion.div>
+   309→   309→
+   310→   310→        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+   311→   311→          {services.map((service, i) => (
+   312→   312→            <motion.div
+   313→   313→              key={service.title}
+   314→   314→              initial={{ opacity: 0, y: 20 }}
+   315→   315→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   316→   316→              transition={{ duration: 0.5, delay: i * 0.1 }}
+   317→   317→            >
+   318→   318→              <Card className="glow-teal group h-full border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card/90">
+   319→   319→                <CardHeader>
+   320→   320→                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+   321→   321→                    <service.icon className="h-6 w-6" />
+   322→   322→                  </div>
+   323→   323→                  <CardTitle className="text-lg">{service.title}</CardTitle>
+   324→   324→                </CardHeader>
+   325→   325→                <CardContent className="flex flex-col gap-4">
+   326→   326→                  <p className="text-sm leading-relaxed text-muted-foreground">
+   327→   327→                    {service.description}
+   328→   328→                  </p>
+   329→   329→                  <ul className="space-y-2">
+   330→   330→                    {service.features.map((feature) => (
+   331→   331→                      <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+   332→   332→                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+   333→   333→                        {feature}
+   334→   334→                      </li>
+   335→   335→                    ))}
+   336→   336→                  </ul>
+   337→   337→                </CardContent>
+   338→   338→              </Card>
+   339→   339→            </motion.div>
+   340→   340→          ))}
+   341→   341→        </div>
+   342→   342→      </div>
+   343→   343→    </section>
+   344→   344→  );
+   345→   345→}
+   346→   346→
+   347→   347→/* ─── Why Choose Us ─── */
+   348→   348→const reasons = [
+   349→   349→  {
+   350→   350→    icon: ShieldCheck,
+   351→   351→    title: 'No Data, No Fee',
+   352→   352→    description:
+   353→   353→      'We operate on a strict no-recovery, no-charge policy. If we cannot recover your data, you pay absolutely nothing. This ensures you bear zero financial risk when entrusting us with your device.',
+   354→   354→  },
+   355→   355→  {
+   356→   356→    icon: Clock,
+   357→   357→    title: 'Fast Turnaround',
+   358→   358→    description:
+   359→   359→      'Most standard recoveries are completed within 24-48 hours. For urgent cases, we offer emergency same-day and priority recovery services so you can get back to business without prolonged downtime.',
+   360→   360→  },
+   361→   361→  {
+   362→   362→    icon: Shield,
+   363→   363→    title: '100% Confidential',
+   364→   364→    description:
+   365→   365→      'Your data privacy is our top priority. We sign NDAs, follow strict data protection protocols, and ensure that your recovered files are never accessed, shared, or stored without your explicit permission.',
+   366→   366→  },
+   367→   367→  {
+   368→   368→    icon: Headphones,
+   369→   369→    title: '24/7 Support',
+   370→   370→    description:
+   371→   371→      'Our dedicated support team is available around the clock. Whether it is a late-night emergency or a weekend crisis, you can always reach us for immediate assistance and status updates on your recovery.',
+   372→   372→  },
+   373→   373→  {
+   374→   374→    icon: Award,
+   375→   375→    title: 'Certified Experts',
+   376→   376→    description:
+   377→   377→      'Our engineers hold industry-leading certifications and have 15+ years of hands-on experience. We invest in continuous training and cutting-edge tools to stay ahead of evolving storage technologies.',
+   378→   378→  },
+   379→   379→  {
+   380→   380→    icon: Zap,
+   381→   381→    title: 'High Success Rate',
+   382→   382→    description:
+   383→   383→      'With a 98.5% recovery success rate across all device types, we consistently deliver results where others fail. Our cleanroom facilities and proprietary techniques maximize every recovery opportunity.',
+   384→   384→  },
+   385→   385→];
+   386→   386→
+   387→   387→function WhyUsSection() {
+   388→   388→  const ref = useRef(null);
+   389→   389→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   390→   390→
+   391→   391→  return (
+   392→   392→    <section id="why-us" className="relative py-24 sm:py-32" ref={ref}>
+   393→   393→      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
+   394→   394→      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   395→   395→        <motion.div
+   396→   396→          initial={{ opacity: 0, y: 20 }}
+   397→   397→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   398→   398→          transition={{ duration: 0.5 }}
+   399→   399→          className="mb-16 text-center"
+   400→   400→        >
+   401→   401→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
+   402→   402→            Why Choose Us
+   403→   403→          </Badge>
+   404→   404→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   405→   405→            Why <span className="gradient-text">10,000+ Customers</span> Trust Us
+   406→   406→          </h2>
+   407→   407→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   408→   408→            We combine cutting-edge technology with years of expertise to deliver the
+   409→   409→            highest recovery success rate in the industry.
+   410→   410→          </p>
+   411→   411→        </motion.div>
+   412→   412→
+   413→   413→        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+   414→   414→          {reasons.map((reason, i) => (
+   415→   415→            <motion.div
+   416→   416→              key={reason.title}
+   417→   417→              initial={{ opacity: 0, y: 20 }}
+   418→   418→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   419→   419→              transition={{ duration: 0.5, delay: i * 0.1 }}
+   420→   420→            >
+   421→   421→              <div className="group flex gap-4 rounded-xl border border-border/50 bg-card/40 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card/70">
+   422→   422→                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+   423→   423→                  <reason.icon className="h-6 w-6" />
+   424→   424→                </div>
+   425→   425→                <div>
+   426→   426→                  <h3 className="mb-1 font-semibold">{reason.title}</h3>
+   427→   427→                  <p className="text-sm leading-relaxed text-muted-foreground">
+   428→   428→                    {reason.description}
+   429→   429→                  </p>
+   430→   430→                </div>
+   431→   431→              </div>
+   432→   432→            </motion.div>
+   433→   433→          ))}
+   434→   434→        </div>
+   435→   435→      </div>
+   436→   436→    </section>
+   437→   437→  );
+   438→   438→}
+   439→   439→
+   440→   440→/* ─── Process Section ─── */
+   441→   441→const steps = [
+   442→   442→  {
+   443→   443→    step: '01',
+   444→   444→    title: 'Submit Your Request',
+   445→   445→    description:
+   446→   446→      'Fill out our quick contact form below or call us directly. Tell us about your device, the problem you are facing, and what data you need recovered. Our team will respond within 1 hour.',
+   447→   447→  },
+   448→   448→  {
+   449→   449→    step: '02',
+   450→   450→    title: 'Free Diagnosis',
+   451→   451→    description:
+   452→   452→      'Send or bring your device to our lab. Our engineers perform a thorough diagnosis using advanced tools, identifying the exact cause of data loss and providing you with a detailed recovery report and fixed quote.',
+   453→   453→  },
+   454→   454→  {
+   455→   455→    step: '03',
+   456→   456→    title: 'Data Recovery',
+   457→   457→    description:
+   458→   458→      'Once you approve, our specialists get to work in our certified cleanroom. Using state-of-the-art equipment and proprietary techniques, we carefully extract and reconstruct your lost data.',
+   459→   459→  },
+   460→   460→  {
+   461→   461→    step: '04',
+   462→   462→    title: 'Receive Your Data',
+   463→   463→    description:
+   464→   464→      'We verify the recovered files for integrity and transfer them to a new storage device of your choice. Pay only after you confirm your data is fully recovered and accessible.',
+   465→   465→  },
+   466→   466→];
+   467→   467→
+   468→   468→function ProcessSection() {
+   469→   469→  const ref = useRef(null);
+   470→   470→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   471→   471→
+   472→   472→  return (
+   473→   473→    <section id="process" className="relative py-24 sm:py-32" ref={ref}>
+   474→   474→      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   475→   475→        <motion.div
+   476→   476→          initial={{ opacity: 0, y: 20 }}
+   477→   477→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   478→   478→          transition={{ duration: 0.5 }}
+   479→   479→          className="mb-16 text-center"
+   480→   480→        >
+   481→   481→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
+   482→   482→            How It Works
+   483→   483→          </Badge>
+   484→   484→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   485→   485→            Simple <span className="gradient-text">4-Step</span> Recovery Process
+   486→   486→          </h2>
+   487→   487→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   488→   488→            Getting your data back is hassle-free. Follow our simple process and
+   489→   489→            let our experts handle the rest.
+   490→   490→          </p>
+   491→   491→        </motion.div>
+   492→   492→
+   493→   493→        <div className="relative">
+   494→   494→          {/* Connecting line */}
+   495→   495→          <div className="absolute left-6 top-0 hidden h-full w-px bg-gradient-to-b from-primary/50 via-primary/20 to-transparent lg:block" />
+   496→   496→
+   497→   497→          <div className="grid gap-8 lg:grid-cols-4">
+   498→   498→            {steps.map((item, i) => (
+   499→   499→              <motion.div
+   500→   500→                key={item.step}
+   501→   501→                initial={{ opacity: 0, y: 20 }}
+   502→   502→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+   503→   503→                transition={{ duration: 0.5, delay: i * 0.15 }}
+   504→   504→              >
+   505→   505→                <div className="relative">
+   506→   506→                  <div className="mb-4 flex items-center gap-4">
+   507→   507→                    <div className="glow-teal-strong flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-sm font-bold text-primary">
+   508→   508→                      {item.step}
+   509→   509→                    </div>
+   510→   510→                    {i < steps.length - 1 && (
+   511→   511→                      <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent lg:hidden" />
+   512→   512→                    )}
+   513→   513→                  </div>
+   514→   514→                  <h3 className="mb-2 text-lg font-semibold">{item.title}</h3>
+   515→   515→                  <p className="text-sm leading-relaxed text-muted-foreground">
+   516→   516→                    {item.description}
+   517→   517→                  </p>
+   518→   518→                </div>
+   519→   519→              </motion.div>
+   520→   520→            ))}
+   521→   521→          </div>
+   522→   522→        </div>
+   523→   523→      </div>
+   524→   524→    </section>
+   525→   525→  );
+   526→   526→}
+   527→   527→
+   528→   528→/* ─── Testimonials ─── */
+   529→   529→const testimonials = [
+   530→   530→  {
+   531→   531→    name: 'Rajesh Kumar',
+   532→   532→    role: 'Business Owner',
+   533→   533→    text: 'My external HDD crashed with 5 years of business accounts. DataRescue Pro recovered everything within 2 days. Absolute lifesavers — I cannot thank them enough for their professionalism and speed.',
+   534→   534→    rating: 5,
+   535→   535→  },
+   536→   536→  {
+   537→   537→    name: 'Priya Sharma',
+   538→   538→    role: 'Photographer',
+   539→   539→    text: 'I accidentally formatted my 128GB SD card full of wedding photos. I was devastated. They recovered every single photo in original quality. Their no-data-no-fee promise gave me complete peace of mind.',
+   540→   540→    rating: 5,
+   541→   541→  },
+   542→   542→  {
+   543→   543→    name: 'Amit Patel',
+   544→   544→    role: 'IT Manager',
+   545→   545→    text: 'Our RAID 5 server suffered a dual disk failure. Their team reconstructed the entire array and recovered all critical business data. The emergency service was fast and the communication was excellent throughout.',
+   546→   546→    rating: 5,
+   547→   547→  },
+   548→   548→];
+   549→   549→
+   550→   550→function TestimonialsSection() {
+   551→   551→  const ref = useRef(null);
+   552→   552→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   553→   553→
+   554→   554→  return (
+   555→   555→    <section className="relative py-24 sm:py-32" ref={ref}>
+   556→   556→      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
+   557→   557→      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   558→   558→        <motion.div
+   559→   559→          initial={{ opacity: 0, y: 20 }}
+   560→   560→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   561→   561→          transition={{ duration: 0.5 }}
+   562→   562→          className="mb-16 text-center"
+   563→   563→        >
+   564→   564→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
+   565→   565→            Testimonials
+   566→   566→          </Badge>
+   567→   567→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   568→   568→            What Our <span className="gradient-text">Customers</span> Say
+   569→   569→          </h2>
+   570→   570→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   571→   571→            Real stories from real customers who trusted us with their most valuable data.
+   572→   572→          </p>
+   573→   573→        </motion.div>
+   574→   574→
+   575→   575→        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+   576→   576→          {testimonials.map((t, i) => (
+   577→   577→            <motion.div
+   578→   578→              key={t.name}
+   579→   579→              initial={{ opacity: 0, y: 20 }}
+   580→   580→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   581→   581→              transition={{ duration: 0.5, delay: i * 0.1 }}
+   582→   582→            >
+   583→   583→              <Card className="glow-teal h-full border-border/50 bg-card/60 backdrop-blur-sm">
+   584→   584→                <CardContent className="p-6">
+   585→   585→                  <div className="mb-4 flex gap-1">
+   586→   586→                    {Array.from({ length: t.rating }).map((_, j) => (
+   587→   587→                      <Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+   588→   588→                    ))}
+   589→   589→                  </div>
+   590→   590→                  <p className="mb-6 text-sm leading-relaxed text-muted-foreground italic">
+   591→   591→                    &ldquo;{t.text}&rdquo;
+   592→   592→                  </p>
+   593→   593→                  <div className="flex items-center gap-3">
+   594→   594→                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+   595→   595→                      {t.name.split(' ').map(n => n[0]).join('')}
+   596→   596→                    </div>
+   597→   597→                    <div>
+   598→   598→                      <div className="text-sm font-semibold">{t.name}</div>
+   599→   599→                      <div className="text-xs text-muted-foreground">{t.role}</div>
+   600→   600→                    </div>
+   601→   601→                  </div>
+   602→   602→                </CardContent>
+   603→   603→              </Card>
+   604→   604→            </motion.div>
+   605→   605→          ))}
+   606→   606→        </div>
+   607→   607→      </div>
+   608→   608→    </section>
+   609→   609→  );
+   610→   610→}
+   611→   611→
+   612→   612→/* ─── Contact Form ─── */
+   613→   613→const serviceOptions = [
+   614→   614→  'Pendrive Data Recovery',
+   615→   615→  'HDD Data Recovery',
+   616→   616→  'Memory Card Recovery',
+   617→   617→  'SSD Data Recovery',
+   618→   618→  'RAID Data Recovery',
+   619→   619→  'Database Recovery',
+   620→   620→  'Laptop Data Recovery',
+   621→   621→  'Mobile Phone Recovery',
+   622→   622→  'Other',
+   623→   623→];
+   624→   624→
+   625→   625→function ContactSection() {
+   626→   626→  const ref = useRef(null);
+   627→   627→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   628→   628→  const { toast } = useToast();
+   629→   629→  const [submitting, setSubmitting] = useState(false);
+   630→   630→  const [form, setForm] = useState({
+   631→   631→    name: '',
+   632→   632→    email: '',
+   633→   633→    phone: '',
+   634→   634→    serviceType: '',
+   635→   635→    deviceType: '',
+   636→   636→    message: '',
+   637→   637→  });
+   638→   638→
+   639→   639→  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+   640→   640→    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+   641→   641→  };
+   642→   642→
+   643→   643→  const handleSubmit = async (e: React.FormEvent) => {
+   644→   644→    e.preventDefault();
+   645→   645→    if (!form.name || !form.email || !form.phone || !form.serviceType) {
+   646→   646→      toast({
+   647→   647→        title: 'Missing Fields',
+   648→   648→        description: 'Please fill in all required fields.',
+   649→   649→        variant: 'destructive',
+   650→   650→      });
+   651→   651→      return;
+   652→   652→    }
+   653→   653→
+   654→   654→    setSubmitting(true);
+   655→   655→    try {
+   656→   656→      const res = await fetch('/api/contact', {
+   657→   657→        method: 'POST',
+   658→   658→        headers: { 'Content-Type': 'application/json' },
+   659→   659→        body: JSON.stringify(form),
+   660→   660→      });
+   661→   661→      const data = await res.json();
+   662→   662→
+   663→   663→      if (data.success) {
+   664→   664→        toast({
+   665→   665→          title: 'Request Submitted!',
+   666→   666→          description: 'Our team will contact you within 1 hour.',
+   667→   667→        });
+   668→   668→        setForm({ name: '', email: '', phone: '', serviceType: '', deviceType: '', message: '' });
+   669→   669→      } else {
+   670→   670→        toast({
+   671→   671→          title: 'Submission Failed',
+   672→   672→          description: data.error || 'Something went wrong. Please try again.',
+   673→   673→          variant: 'destructive',
+   674→   674→        });
+   675→   675→      }
+   676→   676→    } catch {
+   677→   677→      toast({
+   678→   678→        title: 'Network Error',
+   679→   679→        description: 'Please check your connection and try again.',
+   680→   680→        variant: 'destructive',
+   681→   681→      });
+   682→   682→    } finally {
+   683→   683→      setSubmitting(false);
+   684→   684→    }
+   685→   685→  };
+   686→   686→
+   687→   687→  return (
+   688→   688→    <section id="contact" className="relative py-24 sm:py-32" ref={ref}>
+   689→   689→      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   690→   690→        <motion.div
+   691→   691→          initial={{ opacity: 0, y: 20 }}
+   692→   692→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   693→   693→          transition={{ duration: 0.5 }}
+   694→   694→          className="mb-16 text-center"
+   695→   695→        >
+   696→   696→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
+   697→   697→            Get In Touch
+   698→   698→          </Badge>
+   699→   699→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   700→   700→            Request a <span className="gradient-text">Free Consultation</span>
+   701→   701→          </h2>
+   702→   702→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   703→   703→            Tell us about your data loss situation. We&apos;ll provide a free diagnosis
+   704→   704→            and quote — no obligations, no hidden fees.
+   705→   705→          </p>
+   706→   706→        </motion.div>
+   707→   707→
+   708→   708→        <div className="grid gap-12 lg:grid-cols-5">
+   709→   709→          {/* Contact Info */}
+   710→   710→          <motion.div
+   711→   711→            initial={{ opacity: 0, x: -20 }}
+   712→   712→            animate={isInView ? { opacity: 1, x: 0 } : {}}
+   713→   713→            transition={{ duration: 0.5, delay: 0.1 }}
+   714→   714→            className="space-y-8 lg:col-span-2"
+   715→   715→          >
+   716→   716→            <div>
+   717→   717→              <h3 className="mb-4 text-xl font-semibold">Contact Information</h3>
+   718→   718→              <p className="text-sm leading-relaxed text-muted-foreground">
+   719→   719→                Reach out to us through any of the channels below. Our team is
+   720→   720→                available 24/7 for emergency data recovery needs.
+   721→   721→              </p>
+   722→   722→            </div>
+   723→   723→
+   724→   724→            <div className="space-y-5">
+   725→   725→              {[
+   726→   726→                { icon: Phone, label: 'Call Us', value: '+91 98765 43210', sub: '24/7 Emergency Line' },
+   727→   727→                { icon: Mail, label: 'Email Us', value: 'support@datarescuepro.com', sub: 'Response within 1 hour' },
+   728→   728→                { icon: MapPin, label: 'Visit Us', value: 'Tech Park, Sector 62', sub: 'Noida, UP 201301' },
+   729→   729→              ].map((item) => (
+   730→   730→                <div key={item.label} className="flex items-start gap-4">
+   731→   731→                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+   732→   732→                    <item.icon className="h-5 w-5" />
+   733→   733→                  </div>
+   734→   734→                  <div>
+   735→   735→                    <div className="text-sm font-medium">{item.label}</div>
+   736→   736→                    <div className="text-sm text-foreground">{item.value}</div>
+   737→   737→                    <div className="text-xs text-muted-foreground">{item.sub}</div>
+   738→   738→                  </div>
+   739→   739→                </div>
+   740→   740→              ))}
+   741→   741→            </div>
+   742→   742→
+   743→   743→            <div className="rounded-xl border border-border/50 bg-card/60 p-6 backdrop-blur-sm">
+   744→   744→              <h4 className="mb-2 font-semibold text-primary">Emergency Recovery?</h4>
+   745→   745→              <p className="text-sm text-muted-foreground">
+   746→   746→                For urgent data loss situations, call our emergency hotline for
+   747→   747→                immediate priority service and same-day recovery options.
+   748→   748→              </p>
+   749→   749→            </div>
+   750→   750→          </motion.div>
+   751→   751→
+   752→   752→          {/* Form */}
+   753→   753→          <motion.div
+   754→   754→            initial={{ opacity: 0, x: 20 }}
+   755→   755→            animate={isInView ? { opacity: 1, x: 0 } : {}}
+   756→   756→            transition={{ duration: 0.5, delay: 0.2 }}
+   757→   757→            className="lg:col-span-3"
+   758→   758→          >
+   759→   759→            <Card className="glow-teal border-border/50 bg-card/60 backdrop-blur-sm">
+   760→   760→              <CardContent className="p-6 sm:p-8">
+   761→   761→                <form onSubmit={handleSubmit} className="space-y-5">
+   762→   762→                  <div className="grid gap-5 sm:grid-cols-2">
+   763→   763→                    <div className="space-y-2">
+   764→   764→                      <Label htmlFor="name">Full Name *</Label>
+   765→   765→                      <Input
+   766→   766→                        id="name"
+   767→   767→                        name="name"
+   768→   768→                        placeholder="Your full name"
+   769→   769→                        value={form.name}
+   770→   770→                        onChange={handleChange}
+   771→   771→                        required
+   772→   772→                        className="border-border/50 bg-background/50"
+   773→   773→                      />
+   774→   774→                    </div>
+   775→   775→                    <div className="space-y-2">
+   776→   776→                      <Label htmlFor="email">Email Address *</Label>
+   777→   777→                      <Input
+   778→   778→                        id="email"
+   779→   779→                        name="email"
+   780→   780→                        type="email"
+   781→   781→                        placeholder="you@example.com"
+   782→   782→                        value={form.email}
+   783→   783→                        onChange={handleChange}
+   784→   784→                        required
+   785→   785→                        className="border-border/50 bg-background/50"
+   786→   786→                      />
+   787→   787→                    </div>
+   788→   788→                  </div>
+   789→   789→
+   790→   790→                  <div className="grid gap-5 sm:grid-cols-2">
+   791→   791→                    <div className="space-y-2">
+   792→   792→                      <Label htmlFor="phone">Phone Number *</Label>
+   793→   793→                      <Input
+   794→   794→                        id="phone"
+   795→   795→                        name="phone"
+   796→   796→                        type="tel"
+   797→   797→                        placeholder="+91 98765 43210"
+   798→   798→                        value={form.phone}
+   799→   799→                        onChange={handleChange}
+   800→   800→                        required
+   801→   801→                        className="border-border/50 bg-background/50"
+   802→   802→                      />
+   803→   803→                    </div>
+   804→   804→                    <div className="space-y-2">
+   805→   805→                      <Label htmlFor="deviceType">Device / Brand</Label>
+   806→   806→                      <Input
+   807→   807→                        id="deviceType"
+   808→   808→                        name="deviceType"
+   809→   809→                        placeholder="e.g. Samsung 1TB HDD"
+   810→   810→                        value={form.deviceType}
+   811→   811→                        onChange={handleChange}
+   812→   812→                        className="border-border/50 bg-background/50"
+   813→   813→                      />
+   814→   814→                    </div>
+   815→   815→                  </div>
+   816→   816→
+   817→   817→                  <div className="space-y-2">
+   818→   818→                    <Label htmlFor="serviceType">Service Required *</Label>
+   819→   819→                    <Select
+   820→   820→                      value={form.serviceType}
+   821→   821→                      onValueChange={(val) => setForm((p) => ({ ...p, serviceType: val }))}
+   822→   822→                    >
+   823→   823→                      <SelectTrigger className="border-border/50 bg-background/50">
+   824→   824→                        <SelectValue placeholder="Select a recovery service" />
+   825→   825→                      </SelectTrigger>
+   826→   826→                      <SelectContent>
+   827→   827→                        {serviceOptions.map((opt) => (
+   828→   828→                          <SelectItem key={opt} value={opt}>
+   829→   829→                            {opt}
+   830→   830→                          </SelectItem>
+   831→   831→                        ))}
+   832→   832→                      </SelectContent>
+   833→   833→                    </Select>
+   834→   834→                  </div>
+   835→   835→
+   836→   836→                  <div className="space-y-2">
+   837→   837→                    <Label htmlFor="message">Describe Your Problem</Label>
+   838→   838→                    <Textarea
+   839→   839→                      id="message"
+   840→   840→                      name="message"
+   841→   841→                      placeholder="Tell us what happened — how did you lose data? What files do you need recovered?"
+   842→   842→                      rows={4}
+   843→   843→                      value={form.message}
+   844→   844→                      onChange={handleChange}
+   845→   845→                      className="border-border/50 bg-background/50 resize-none"
+   846→   846→                    />
+   847→   847→                  </div>
+   848→   848→
+   849→   849→                  <Button
+   850→   850→                    type="submit"
+   851→   851→                    disabled={submitting}
+   852→   852→                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+   853→   853→                    size="lg"
+   854→   854→                  >
+   855→   855→                    {submitting ? (
+   856→   856→                      <span className="flex items-center gap-2">
+   857→   857→                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
+   858→   858→                        Submitting...
+   859→   859→                      </span>
+   860→   860→                    ) : (
+   861→   861→                      <span className="flex items-center gap-2">
+   862→   862→                        Submit Request
+   863→   863→                        <ArrowRight className="h-4 w-4" />
+   864→   864→                      </span>
+   865→   865→                    )}
+   866→   866→                  </Button>
+   867→   867→
+   868→   868→                  <p className="text-center text-xs text-muted-foreground">
+   869→   869→                    By submitting, you agree to our terms. Your information is 100%
+   870→   870→                    secure and will never be shared with third parties.
+   871→   871→                  </p>
+   872→   872→                </form>
+   873→   873→              </CardContent>
+   874→   874→            </Card>
+   875→   875→          </motion.div>
+   876→   876→        </div>
+   877→   877→      </div>
+   878→   878→    </section>
+   879→   879→  );
+   880→   880→}
+   881→   881→
+   882→   882→/* ─── Footer ─── */
+   883→   883→function Footer() {
+   884→   884→  return (
+   885→   885→    <footer className="border-t border-border/50 bg-card/40 backdrop-blur-sm">
+   886→   886→      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+   887→   887→        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+   888→   888→          <div className="space-y-4">
+   889→   889→            <div className="flex items-center gap-2">
+   890→   890→              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+   891→   891→                <Database className="h-4 w-4 text-primary-foreground" />
+   892→   892→              </div>
+   893→   893→              <span className="font-bold">
+   894→   894→                Data<span className="text-primary">Rescue</span> Pro
+   895→   895→              </span>
+   896→   896→            </div>
+   897→   897→            <p className="text-sm leading-relaxed text-muted-foreground">
+   898→   898→              India&apos;s most trusted data recovery service. We recover data from any
+   899→   899→              device, any brand, any situation.
+   900→   900→            </p>
+   901→   901→          </div>
+   902→   902→
+   903→   903→          <div className="space-y-4">
+   904→   904→            <h4 className="text-sm font-semibold">Services</h4>
+   905→   905→            <ul className="space-y-2 text-sm text-muted-foreground">
+   906→   906→              {['Pendrive Recovery', 'HDD Recovery', 'SSD Recovery', 'Memory Card Recovery', 'RAID Recovery'].map((s) => (
+   907→   907→                <li key={s}><a href="#services" className="transition-colors hover:text-primary">{s}</a></li>
+   908→   908→              ))}
+   909→   909→            </ul>
+   910→   910→          </div>
+   911→   911→
+   912→   912→          <div className="space-y-4">
+   913→   913→            <h4 className="text-sm font-semibold">Company</h4>
+   914→   914→            <ul className="space-y-2 text-sm text-muted-foreground">
+   915→   915→              {['About Us', 'Our Team', 'Careers', 'Blog', 'Privacy Policy'].map((s) => (
+   916→   916→                <li key={s}><a href="#" className="transition-colors hover:text-primary">{s}</a></li>
+   917→   917→              ))}
+   918→   918→            </ul>
+   919→   919→          </div>
+   920→   920→
+   921→   921→          <div className="space-y-4">
+   922→   922→            <h4 className="text-sm font-semibold">Contact</h4>
+   923→   923→            <ul className="space-y-2 text-sm text-muted-foreground">
+   924→   924→              <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-primary" /> +91 98765 43210</li>
+   925→   925→              <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-primary" /> support@datarescuepro.com</li>
+   926→   926→              <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-primary" /> Noida, UP 201301</li>
+   927→   927→            </ul>
+   928→   928→          </div>
+   929→   929→        </div>
+   930→   930→
+   931→   931→        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-8 sm:flex-row">
+   932→   932→          <p className="text-xs text-muted-foreground">
+   933→   933→            &copy; {new Date().getFullYear()} DataRescue Pro. All rights reserved.
+   934→   934→          </p>
+   935→   935→          <p className="text-xs text-muted-foreground">
+   936→   936→            Recovering your precious data since 2010.
+   937→   937→          </p>
+   938→   938→        </div>
+   939→   939→      </div>
+   940→   940→    </footer>
+   941→   941→  );
+   942→   942→}
+   943→   943→
+   944→   944→/* ─── CTA Banner ─── */
+   945→   945→function CTABanner() {
+   946→   946→  const ref = useRef(null);
+   947→   947→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   948→   948→
+   949→   949→  return (
+   950→   950→    <section className="relative py-20" ref={ref}>
+   951→   951→      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   952→   952→        <motion.div
+   953→   953→          initial={{ opacity: 0, scale: 0.95 }}
+   954→   954→          animate={isInView ? { opacity: 1, scale: 1 } : {}}
+   955→   955→          transition={{ duration: 0.5 }}
+   956→   956→          className="glow-teal-strong relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-emerald-500/10 p-8 text-center sm:p-12"
+   957→   957→        >
+   958→   958→          <div className="absolute inset-0 grid-bg opacity-50" />
+   959→   959→          <div className="relative">
+   960→   960→            <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
+   961→   961→              Don&apos;t Panic — We Can Recover Your Data
+   962→   962→            </h2>
+   963→   963→            <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
+   964→   964→              Whether you accidentally deleted files, dropped your drive, or
+   965→   965→              experienced a complete system failure — we are here to help 24/7.
+   966→   966→            </p>
+   967→   967→            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+   968→   968→              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+   969→   969→                <a href="#contact">
+   970→   970→                  Get Free Diagnosis
+   971→   971→                  <ArrowRight className="ml-2 h-4 w-4" />
+   972→   972→                </a>
+   973→   973→              </Button>
+   974→   974→              <Button size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/10" asChild>
+   975→   975→                <a href="tel:+919876543210">
+   976→   976→                  <Phone className="mr-2 h-4 w-4" />
+   977→   977→                  Call Emergency Line
+   978→   978→                </a>
+   979→   979→              </Button>
+   980→   980→            </div>
+   981→   981→          </div>
+   982→   982→        </motion.div>
+   983→   983→      </div>
+   984→   984→    </section>
+   985→   985→  );
+   986→   986→}
+   987→   987→
+   988→   988→/* ─── Main Page ─── */
+   989→   989→export default function Home() {
+   990→   990→  return (
+   991→   991→    <div className="min-h-screen flex flex-col">
+   992→   992→      <Navbar />
+   993→   993→      <main className="flex-1">
+   994→   994→        <HeroSection />
+   995→   995→        <ServicesSection />
+   996→   996→        <WhyUsSection />
+   997→   997→        <ProcessSection />
+   998→   998→        <TestimonialsSection />
+   999→   999→        <CTABanner />
+  1000→  1000→        <ContactSection />
+  1001→  1001→      </main>
+  1002→  1002→      <Footer />
+  1003→  1003→    </div>
+  1004→  1004→  );
+  1005→  1005→}
