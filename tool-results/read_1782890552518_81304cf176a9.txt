@@ -1,0 +1,1011 @@
+     1→'use client';
+     2→
+     3→import { useState, useRef, useEffect, useCallback, useSyncExternalStore } from 'react';
+     4→import { motion, useInView, AnimatePresence } from 'framer-motion';
+     5→import { useTheme } from 'next-themes';
+     6→import { Button } from '@/components/ui/button';
+     7→import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+     8→import { Input } from '@/components/ui/input';
+     9→import { Label } from '@/components/ui/label';
+    10→import { Textarea } from '@/components/ui/textarea';
+    11→import {
+    12→  Select,
+    13→  SelectContent,
+    14→  SelectItem,
+    15→  SelectTrigger,
+    16→  SelectValue,
+    17→} from '@/components/ui/select';
+    18→import { Badge } from '@/components/ui/badge';
+    19→import { useToast } from '@/hooks/use-toast';
+    20→import {
+    21→  HardDrive,
+    22→  Usb,
+    23→  MemoryStick,
+    24→  Database,
+    25→  Shield,
+    26→  ShieldCheck,
+    27→  Clock,
+    28→  Phone,
+    29→  Mail,
+    30→  MapPin,
+    31→  ChevronRight,
+    32→  CheckCircle2,
+    33→  Zap,
+    34→  Headphones,
+    35→  Award,
+    36→  Server,
+    37→  Disc3,
+    38→  ArchiveRestore,
+    39→  ArrowRight,
+    40→  Menu,
+    41→  X,
+    42→  Star,
+    43→  Sun,
+    44→  Moon,
+    45→  LogOut,
+    46→  Lock,
+    47→  Eye,
+    48→  EyeOff,
+    49→  Users,
+    50→  RefreshCw,
+    51→  AlertCircle,
+    52→  CheckCircle,
+    53→} from 'lucide-react';
+    54→
+    55→/* ═══════════════════════════════════════════
+    56→   ADMIN CREDENTIALS (hardcoded for demo)
+    57→   ═══════════════════════════════════════════ */
+    58→const ADMIN_CREDS = { username: 'admin', password: 'admin123' };
+    59→
+    60→/* ═══════════════════════════════════════════
+    61→   THEME TOGGLE COMPONENT
+    62→   ═══════════════════════════════════════════ */
+    63→function ThemeToggle() {
+    64→  const { theme, setTheme, resolvedTheme } = useTheme();
+    65→
+    66→  const isDark = resolvedTheme === 'dark';
+    67→
+    68→  return (
+    69→    <button
+    70→      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+    71→      className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border/50 bg-card/60 transition-all hover:bg-accent hover:border-primary/30"
+    72→      aria-label="Toggle theme"
+    73→    >
+    74→      <AnimatePresence mode="wait" initial={false}>
+    75→        {isDark ? (
+    76→          <motion.div key="sun" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+    77→            <Sun className="h-4 w-4 text-yellow-400" />
+    78→          </motion.div>
+    79→        ) : (
+    80→          <motion.div key="moon" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+    81→            <Moon className="h-4 w-4 text-foreground" />
+    82→          </motion.div>
+    83→        )}
+    84→      </AnimatePresence>
+    85→    </button>
+    86→  );
+    87→}
+    88→
+    89→/* ═══════════════════════════════════════════
+    90→   NAVIGATION
+    91→   ═══════════════════════════════════════════ */
+    92→function Navbar({ onAdminClick }: { onAdminClick: () => void }) {
+    93→  const [open, setOpen] = useState(false);
+    94→  const links = [
+    95→    { label: 'Services', href: '#services' },
+    96→    { label: 'Why Us', href: '#why-us' },
+    97→    { label: 'Process', href: '#process' },
+    98→    { label: 'Testimonials', href: '#testimonials' },
+    99→    { label: 'Contact', href: '#contact' },
+   100→  ];
+   101→
+   102→  return (
+   103→    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+   104→      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+   105→        <a href="#" className="flex items-center gap-2">
+   106→          <img src="/hero-bg.png" alt="DataRescue Pro Logo" className="h-9 w-9 rounded-lg object-cover" />
+   107→          <span className="text-lg font-bold tracking-tight">
+   108→            Data<span className="text-primary">Rescue</span> Pro
+   109→          </span>
+   110→        </a>
+   111→
+   112→        <nav className="hidden items-center gap-8 md:flex">
+   113→          {links.map((link) => (
+   114→            <a key={link.href} href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-primary">
+   115→              {link.label}
+   116→            </a>
+   117→          ))}
+   118→        </nav>
+   119→
+   120→        <div className="flex items-center gap-3">
+   121→          <ThemeToggle />
+   122→          <Button size="sm" className="hidden sm:inline-flex bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+   123→            <a href="#contact">Get Free Quote</a>
+   124→          </Button>
+   125→          <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+   126→            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+   127→          </button>
+   128→        </div>
+   129→      </div>
+   130→
+   131→      <AnimatePresence>
+   132→        {open && (
+   133→          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden border-b border-border/50 bg-background/95 backdrop-blur-xl md:hidden">
+   134→            <nav className="flex flex-col gap-1 px-4 py-4">
+   135→              {links.map((link) => (
+   136→                <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+   137→                  {link.label}
+   138→                </a>
+   139→              ))}
+   140→              <Button size="sm" className="mt-2 bg-primary text-primary-foreground" asChild>
+   141→                <a href="#contact" onClick={() => setOpen(false)}>Get Free Quote</a>
+   142→              </Button>
+   143→            </nav>
+   144→          </motion.div>
+   145→        )}
+   146→      </AnimatePresence>
+   147→    </header>
+   148→  );
+   149→}
+   150→
+   151→/* ═══════════════════════════════════════════
+   152→   HERO SECTION
+   153→   ═══════════════════════════════════════════ */
+   154→function HeroSection() {
+   155→  return (
+   156→    <section className="relative flex min-h-screen items-center overflow-hidden pt-16">
+   157→      {/* Background image */}
+   158→      <div className="absolute inset-0 z-0">
+   159→        <img src="/hero-bg.png" alt="" className="h-full w-full object-cover" />
+   160→        <div className="absolute inset-0 bg-white/[0.94] dark:bg-background/80" />
+   161→      </div>
+   162→      <div className="absolute inset-0 z-0 overflow-hidden">
+   163→        <div className="animate-float absolute -top-20 -left-20 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
+   164→        <div className="animate-float-delayed absolute -right-20 top-1/3 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+   165→        <div className="animate-pulse-glow absolute bottom-20 left-1/3 h-2 w-2 rounded-full bg-primary" />
+   166→        <div className="animate-pulse-glow absolute top-40 right-1/4 h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ animationDelay: '1s' }} />
+   167→        <div className="animate-pulse-glow absolute top-60 left-1/4 h-1 w-1 rounded-full bg-teal-400" style={{ animationDelay: '2s' }} />
+   168→      </div>
+   169→
+   170→      <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+   171→        <div className="grid items-center gap-12 lg:grid-cols-2">
+   172→          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+   173→            <Badge variant="outline" className="mb-6 border-primary/30 text-primary">
+   174→              <ShieldCheck className="mr-1.5 h-3.5 w-3.5" />
+   175→              Trusted by 10,000+ Customers
+   176→            </Badge>
+   177→            <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl">
+   178→              Recover Your{' '}
+   179→              <span className="gradient-text">Lost Data</span>{' '}
+   180→              With Expert Precision
+   181→            </h1>
+   182→            <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
+   183→              From crashed hard drives to corrupted pendrives, our certified specialists
+   184→              recover data from any storage device. No data, no charge — guaranteed.
+   185→            </p>
+   186→            <div className="flex flex-col gap-4 sm:flex-row">
+   187→              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-base" asChild>
+   188→                <a href="#contact">Get Free Consultation <ArrowRight className="ml-2 h-4 w-4" /></a>
+   189→              </Button>
+   190→              <Button size="lg" variant="outline" className="border-border text-base" asChild>
+   191→                <a href="#services">Our Services <ChevronRight className="ml-1 h-4 w-4" /></a>
+   192→              </Button>
+   193→            </div>
+   194→            <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+   195→              {['No Data, No Fee', 'Same-Day Diagnosis', '100% Confidential'].map((t) => (
+   196→                <div key={t} className="flex items-center gap-2">
+   197→                  <CheckCircle2 className="h-4 w-4 text-primary" />
+   198→                  <span>{t}</span>
+   199→                </div>
+   200→              ))}
+   201→            </div>
+   202→          </motion.div>
+   203→
+   204→          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.2 }} className="hidden lg:flex lg:justify-center">
+   205→            <div className="glow-teal relative">
+   206→              <div className="grid grid-cols-2 gap-4">
+   207→                {[
+   208→                  { icon: HardDrive, label: 'HDD Recovery', color: 'text-teal-400' },
+   209→                  { icon: Usb, label: 'Pendrive Recovery', color: 'text-emerald-400' },
+   210→                  { icon: MemoryStick, label: 'Memory Card', color: 'text-cyan-400' },
+   211→                  { icon: Server, label: 'RAID Recovery', color: 'text-teal-300' },
+   212→                  { icon: Disc3, label: 'SSD Recovery', color: 'text-green-400' },
+   213→                  { icon: ArchiveRestore, label: 'File Recovery', color: 'text-emerald-300' },
+   214→                ].map((item, i) => (
+   215→                  <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + i * 0.1 }}>
+   216→                    <Card className="border-border/50 bg-white dark:bg-card/80 backdrop-blur-sm card-hover cursor-default shadow-sm">
+   217→                      <CardContent className="flex flex-col items-center gap-3 p-6">
+   218→                        <item.icon className={`h-10 w-10 ${item.color}`} />
+   219→                        <span className="text-sm font-medium">{item.label}</span>
+   220→                      </CardContent>
+   221→                    </Card>
+   222→                  </motion.div>
+   223→                ))}
+   224→              </div>
+   225→            </div>
+   226→          </motion.div>
+   227→        </div>
+   228→
+   229→        {/* Stats bar */}
+   230→        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
+   231→          {[
+   232→            { value: '10,000+', label: 'Recoveries Done' },
+   233→            { value: '98.5%', label: 'Success Rate' },
+   234→            { value: '15+', label: 'Years Experience' },
+   235→            { value: '24/7', label: 'Emergency Support' },
+   236→          ].map((stat) => (
+   237→            <div key={stat.label} className="rounded-xl border border-border/50 bg-white dark:bg-card/50 p-4 text-center backdrop-blur-sm shadow-sm">
+   238→              <div className="text-2xl font-bold text-primary sm:text-3xl">{stat.value}</div>
+   239→              <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</div>
+   240→            </div>
+   241→          ))}
+   242→        </motion.div>
+   243→      </div>
+   244→    </section>
+   245→  );
+   246→}
+   247→
+   248→/* ═══════════════════════════════════════════
+   249→   SERVICES SECTION (with images)
+   250→   ═══════════════════════════════════════════ */
+   251→const services = [
+   252→  {
+   253→    icon: Usb,
+   254→    title: 'Pendrive Data Recovery',
+   255→    image: '/services/pendrive.png',
+   256→    description: 'Recover files from corrupted, formatted, or physically damaged USB pendrives. We handle all brands and capacities — from 2GB to 1TB flash drives.',
+   257→    features: ['Formatted drive recovery', 'RAW file system fix', 'Physically damaged pen drives', 'All USB brands supported'],
+   258→  },
+   259→  {
+   260→    icon: HardDrive,
+   261→    title: 'HDD Data Recovery',
+   262→    image: '/services/hdd.png',
+   263→    description: 'Expert recovery from crashed, clicking, or dead hard disk drives. Our cleanroom lab handles head crashes, bad sectors, and mechanical failures.',
+   264→    features: ['Clicking / dead HDD', 'Head crash recovery', 'Bad sector handling', 'All HDD brands & sizes'],
+   265→  },
+   266→  {
+   267→    icon: MemoryStick,
+   268→    title: 'Memory Card Recovery',
+   269→    image: '/services/memorycard.png',
+   270→    description: 'Retrieve lost photos, videos, and files from SD cards, microSD cards, CF cards used in cameras, phones, and drones.',
+   271→    features: ['SD / microSD cards', 'CF / XD cards', 'Corrupted card recovery', 'Camera & drone cards'],
+   272→  },
+   273→  {
+   274→    icon: Disc3,
+   275→    title: 'SSD Data Recovery',
+   276→    image: '/services/ssd.png',
+   277→    description: 'Advanced NAND chip-level recovery for solid state drives. We recover data from failed SSDs, damaged controllers, and encrypted drives.',
+   278→    features: ['NAND chip recovery', 'Firmware repair', 'Encrypted SSD support', 'All form factors'],
+   279→  },
+   280→  {
+   281→    icon: Server,
+   282→    title: 'RAID Recovery',
+   283→    image: '/services/raid.png',
+   284→    description: 'Complete RAID array reconstruction and data recovery for RAID 0, 1, 5, 6, 10. We handle multi-disk failures and controller issues.',
+   285→    features: ['RAID 0/1/5/6/10', 'Multi-disk failure', 'Controller issues', 'NAS & server recovery'],
+   286→  },
+   287→  {
+   288→    icon: Database,
+   289→    title: 'Database & Server Recovery',
+   290→    image: '/services/database.png',
+   291→    description: 'Specialized recovery for corrupt databases (MySQL, PostgreSQL, SQL Server), virtual machines, and enterprise server environments.',
+   292→    features: ['SQL database repair', 'VM recovery', 'Exchange server', 'Enterprise solutions'],
+   293→  },
+   294→];
+   295→
+   296→function ServicesSection() {
+   297→  const ref = useRef(null);
+   298→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   299→
+   300→  return (
+   301→    <section id="services" className="relative py-24 sm:py-32" ref={ref}>
+   302→      <div className="absolute inset-0 z-0">
+   303→        <img src="/sections/services-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+   304→        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
+   305→      </div>
+   306→      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   307→        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
+   308→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
+   309→            Our Services
+   310→          </Badge>
+   311→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   312→            Complete Data Recovery <span className="gradient-text">Solutions</span>
+   313→          </h2>
+   314→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   315→            We recover data from every type of storage device. Whether it&apos;s a simple
+   316→            deleted file or a complex RAID failure, our experts have you covered.
+   317→          </p>
+   318→        </motion.div>
+   319→
+   320→        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+   321→          {services.map((service, i) => (
+   322→            <motion.div key={service.title} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
+   323→              <Card className="glow-teal group h-full overflow-hidden border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 dark:hover:bg-card/90 shadow-sm">
+   324→                {/* Image */}
+   325→                <div className="relative h-44 overflow-hidden">
+   326→                  <img
+   327→                    src={service.image}
+   328→                    alt={service.title}
+   329→                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+   330→                    loading="lazy"
+   331→                  />
+   332→                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+   333→                  <div className="absolute bottom-3 left-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/90 text-primary-foreground shadow-lg">
+   334→                    <service.icon className="h-5 w-5" />
+   335→                  </div>
+   336→                </div>
+   337→                <CardHeader className="pb-2 pt-4">
+   338→                  <CardTitle className="text-lg">{service.title}</CardTitle>
+   339→                </CardHeader>
+   340→                <CardContent className="flex flex-col gap-4">
+   341→                  <p className="text-sm leading-relaxed text-muted-foreground">{service.description}</p>
+   342→                  <ul className="space-y-2">
+   343→                    {service.features.map((feature) => (
+   344→                      <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+   345→                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+   346→                        {feature}
+   347→                      </li>
+   348→                    ))}
+   349→                  </ul>
+   350→                </CardContent>
+   351→              </Card>
+   352→            </motion.div>
+   353→          ))}
+   354→        </div>
+   355→      </div>
+   356→    </section>
+   357→  );
+   358→}
+   359→
+   360→/* ═══════════════════════════════════════════
+   361→   WHY CHOOSE US
+   362→   ═══════════════════════════════════════════ */
+   363→const reasons = [
+   364→  { icon: ShieldCheck, title: 'No Data, No Fee', description: 'We operate on a strict no-recovery, no-charge policy. If we cannot recover your data, you pay absolutely nothing — zero financial risk.' },
+   365→  { icon: Clock, title: 'Fast Turnaround', description: 'Most standard recoveries completed within 24-48 hours. Emergency same-day and priority recovery services are also available.' },
+   366→  { icon: Shield, title: '100% Confidential', description: 'Your data privacy is our top priority. We sign NDAs and follow strict data protection protocols on every case.' },
+   367→  { icon: Headphones, title: '24/7 Support', description: 'Our dedicated support team is available around the clock — late-night emergencies or weekend crises, we are always here.' },
+   368→  { icon: Award, title: 'Certified Experts', description: 'Our engineers hold industry certifications and have 15+ years of hands-on experience with cutting-edge recovery tools.' },
+   369→  { icon: Zap, title: '98.5% Success Rate', description: 'We consistently deliver results where others fail. Our cleanroom facilities and proprietary techniques maximize every opportunity.' },
+   370→];
+   371→
+   372→function WhyUsSection() {
+   373→  const ref = useRef(null);
+   374→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   375→
+   376→  return (
+   377→    <section id="why-us" className="relative py-24 sm:py-32" ref={ref}>
+   378→      <div className="absolute inset-0 z-0">
+   379→        <img src="/sections/whyus-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+   380→        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
+   381→      </div>
+   382→      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   383→        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
+   384→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Why Choose Us</Badge>
+   385→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   386→            Why <span className="gradient-text">10,000+ Customers</span> Trust Us
+   387→          </h2>
+   388→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   389→            We combine cutting-edge technology with years of expertise to deliver the highest recovery success rate in the industry.
+   390→          </p>
+   391→        </motion.div>
+   392→        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+   393→          {reasons.map((reason, i) => (
+   394→            <motion.div key={reason.title} initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
+   395→              <div className="group flex gap-4 rounded-xl border border-border/50 bg-white dark:bg-card/40 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 dark:hover:bg-card/70 shadow-sm">
+   396→                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+   397→                  <reason.icon className="h-6 w-6" />
+   398→                </div>
+   399→                <div>
+   400→                  <h3 className="mb-1 font-semibold">{reason.title}</h3>
+   401→                  <p className="text-sm leading-relaxed text-muted-foreground">{reason.description}</p>
+   402→                </div>
+   403→              </div>
+   404→            </motion.div>
+   405→          ))}
+   406→        </div>
+   407→      </div>
+   408→    </section>
+   409→  );
+   410→}
+   411→
+   412→/* ═══════════════════════════════════════════
+   413→   PROCESS SECTION
+   414→   ═══════════════════════════════════════════ */
+   415→const steps = [
+   416→  { step: '01', title: 'Submit Your Request', description: 'Fill out our quick contact form or call us directly. Tell us about your device and the problem. Our team responds within 1 hour.' },
+   417→  { step: '02', title: 'Free Diagnosis', description: 'Send or bring your device to our lab. Our engineers perform a thorough diagnosis and provide a detailed recovery report and fixed quote.' },
+   418→  { step: '03', title: 'Data Recovery', description: 'Once you approve, our specialists work in our certified cleanroom using state-of-the-art equipment to extract and reconstruct your data.' },
+   419→  { step: '04', title: 'Receive Your Data', description: 'We verify recovered files for integrity and transfer them to a new storage device. Pay only after you confirm everything is recovered.' },
+   420→];
+   421→
+   422→function ProcessSection() {
+   423→  const ref = useRef(null);
+   424→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   425→
+   426→  return (
+   427→    <section id="process" className="relative py-24 sm:py-32" ref={ref}>
+   428→      <div className="absolute inset-0 z-0">
+   429→        <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+   430→        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
+   431→      </div>
+   432→      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   433→        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
+   434→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">How It Works</Badge>
+   435→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   436→            Simple <span className="gradient-text">4-Step</span> Recovery Process
+   437→          </h2>
+   438→          <p className="mx-auto max-w-2xl text-muted-foreground">Getting your data back is hassle-free. Follow our simple process and let our experts handle the rest.</p>
+   439→        </motion.div>
+   440→        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+   441→          {steps.map((item, i) => (
+   442→            <motion.div key={item.step} initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.15 }}>
+   443→              <div className="relative">
+   444→                <div className="mb-4 flex items-center gap-4">
+   445→                  <div className="glow-teal-strong flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-sm font-bold text-primary">
+   446→                    {item.step}
+   447→                  </div>
+   448→                  {i < steps.length - 1 && (
+   449→                    <div className="hidden h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent sm:block" />
+   450→                  )}
+   451→                </div>
+   452→                <h3 className="mb-2 text-lg font-semibold">{item.title}</h3>
+   453→                <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+   454→              </div>
+   455→            </motion.div>
+   456→          ))}
+   457→        </div>
+   458→      </div>
+   459→    </section>
+   460→  );
+   461→}
+   462→
+   463→/* ═══════════════════════════════════════════
+   464→   TESTIMONIALS
+   465→   ═══════════════════════════════════════════ */
+   466→const testimonials = [
+   467→  { name: 'Rajesh Kumar', role: 'Business Owner', text: 'My external HDD crashed with 5 years of business accounts. DataRescue Pro recovered everything within 2 days. Absolute lifesavers — I cannot thank them enough for their professionalism and speed.', rating: 5 },
+   468→  { name: 'Priya Sharma', role: 'Photographer', text: 'I accidentally formatted my 128GB SD card full of wedding photos. I was devastated. They recovered every single photo in original quality. Their no-data-no-fee promise gave me complete peace of mind.', rating: 5 },
+   469→  { name: 'Amit Patel', role: 'IT Manager', text: 'Our RAID 5 server suffered a dual disk failure. Their team reconstructed the entire array and recovered all critical business data. The emergency service was fast and the communication was excellent throughout.', rating: 5 },
+   470→];
+   471→
+   472→function TestimonialsSection() {
+   473→  const ref = useRef(null);
+   474→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   475→
+   476→  return (
+   477→    <section id="testimonials" className="relative py-24 sm:py-32" ref={ref}>
+   478→      <div className="absolute inset-0 z-0">
+   479→        <img src="/sections/testimonials-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+   480→        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
+   481→      </div>
+   482→      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   483→        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
+   484→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Testimonials</Badge>
+   485→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   486→            What Our <span className="gradient-text">Customers</span> Say
+   487→          </h2>
+   488→          <p className="mx-auto max-w-2xl text-muted-foreground">Real stories from real customers who trusted us with their most valuable data.</p>
+   489→        </motion.div>
+   490→        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+   491→          {testimonials.map((t, i) => (
+   492→            <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
+   493→              <Card className="glow-teal h-full border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm shadow-sm">
+   494→                <CardContent className="p-6">
+   495→                  <div className="mb-4 flex gap-1">
+   496→                    {Array.from({ length: t.rating }).map((_, j) => (
+   497→                      <Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+   498→                    ))}
+   499→                  </div>
+   500→                  <p className="mb-6 text-sm leading-relaxed text-muted-foreground italic">&ldquo;{t.text}&rdquo;</p>
+   501→                  <div className="flex items-center gap-3">
+   502→                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+   503→                      {t.name.split(' ').map(n => n[0]).join('')}
+   504→                    </div>
+   505→                    <div>
+   506→                      <div className="text-sm font-semibold">{t.name}</div>
+   507→                      <div className="text-xs text-muted-foreground">{t.role}</div>
+   508→                    </div>
+   509→                  </div>
+   510→                </CardContent>
+   511→              </Card>
+   512→            </motion.div>
+   513→          ))}
+   514→        </div>
+   515→      </div>
+   516→    </section>
+   517→  );
+   518→}
+   519→
+   520→/* ═══════════════════════════════════════════
+   521→   CTA BANNER
+   522→   ═══════════════════════════════════════════ */
+   523→function CTABanner() {
+   524→  const ref = useRef(null);
+   525→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   526→
+   527→  return (
+   528→    <section className="relative py-20" ref={ref}>
+   529→      <div className="absolute inset-0 z-0">
+   530→        <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+   531→        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
+   532→      </div>
+   533→      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   534→        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={isInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.5 }}
+   535→          className="glow-teal-strong relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-emerald-500/10 p-8 text-center sm:p-12"
+   536→        >
+   537→          <div className="absolute inset-0 grid-bg opacity-50" />
+   538→          <div className="relative">
+   539→            <h2 className="mb-4 text-2xl font-bold sm:text-3xl">Don&apos;t Panic — We Can Recover Your Data</h2>
+   540→            <p className="mx-auto mb-8 max-w-xl text-muted-foreground">Whether you accidentally deleted files, dropped your drive, or experienced a complete system failure — we are here to help 24/7.</p>
+   541→            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+   542→              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+   543→                <a href="#contact">Get Free Diagnosis <ArrowRight className="ml-2 h-4 w-4" /></a>
+   544→              </Button>
+   545→              <Button size="lg" variant="outline" className="border-primary/30 text-primary hover:bg-primary/10" asChild>
+   546→                <a href="tel:+919876543210"><Phone className="mr-2 h-4 w-4" />Call Emergency Line</a>
+   547→              </Button>
+   548→            </div>
+   549→          </div>
+   550→        </motion.div>
+   551→      </div>
+   552→    </section>
+   553→  );
+   554→}
+   555→
+   556→/* ═══════════════════════════════════════════
+   557→   CONTACT FORM
+   558→   ═══════════════════════════════════════════ */
+   559→const serviceOptions = [
+   560→  'Pendrive Data Recovery', 'HDD Data Recovery', 'Memory Card Recovery',
+   561→  'SSD Data Recovery', 'RAID Data Recovery', 'Database Recovery',
+   562→  'Laptop Data Recovery', 'Mobile Phone Recovery', 'Other',
+   563→];
+   564→
+   565→function ContactSection() {
+   566→  const ref = useRef(null);
+   567→  const isInView = useInView(ref, { once: true, margin: '-100px' });
+   568→  const { toast } = useToast();
+   569→  const [submitting, setSubmitting] = useState(false);
+   570→  const [form, setForm] = useState({ name: '', email: '', phone: '', serviceType: '', deviceType: '', message: '' });
+   571→
+   572→  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+   573→    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+   574→  };
+   575→
+   576→  const handleSubmit = async (e: React.FormEvent) => {
+   577→    e.preventDefault();
+   578→    if (!form.name || !form.email || !form.phone || !form.serviceType) {
+   579→      toast({ title: 'Missing Fields', description: 'Please fill in all required fields.', variant: 'destructive' });
+   580→      return;
+   581→    }
+   582→    setSubmitting(true);
+   583→    try {
+   584→      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+   585→      const data = await res.json();
+   586→      if (data.success) {
+   587→        toast({ title: 'Request Submitted!', description: 'Our team will contact you within 1 hour.' });
+   588→        setForm({ name: '', email: '', phone: '', serviceType: '', deviceType: '', message: '' });
+   589→      } else {
+   590→        toast({ title: 'Submission Failed', description: data.error || 'Something went wrong.', variant: 'destructive' });
+   591→      }
+   592→    } catch {
+   593→      toast({ title: 'Network Error', description: 'Please check your connection and try again.', variant: 'destructive' });
+   594→    } finally {
+   595→      setSubmitting(false);
+   596→    }
+   597→  };
+   598→
+   599→  return (
+   600→    <section id="contact" className="relative py-24 sm:py-32" ref={ref}>
+   601→      <div className="absolute inset-0 z-0">
+   602→        <img src="/sections/contact-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+   603→        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
+   604→      </div>
+   605→      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+   606→        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
+   607→          <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Get In Touch</Badge>
+   608→          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+   609→            Request a <span className="gradient-text">Free Consultation</span>
+   610→          </h2>
+   611→          <p className="mx-auto max-w-2xl text-muted-foreground">
+   612→            Tell us about your data loss situation. We&apos;ll provide a free diagnosis and quote — no obligations, no hidden fees.
+   613→          </p>
+   614→        </motion.div>
+   615→
+   616→        <div className="grid gap-12 lg:grid-cols-5">
+   617→          {/* Contact Info */}
+   618→          <motion.div initial={{ opacity: 0, x: -20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5, delay: 0.1 }} className="space-y-8 lg:col-span-2">
+   619→            <div>
+   620→              <h3 className="mb-4 text-xl font-semibold">Contact Information</h3>
+   621→              <p className="text-sm leading-relaxed text-muted-foreground">Reach out to us through any of the channels below. Our team is available 24/7 for emergency data recovery needs.</p>
+   622→            </div>
+   623→            <div className="space-y-5">
+   624→              {[
+   625→                { icon: Phone, label: 'Call Us', value: '+91 98765 43210', sub: '24/7 Emergency Line' },
+   626→                { icon: Mail, label: 'Email Us', value: 'support@datarescuepro.com', sub: 'Response within 1 hour' },
+   627→                { icon: MapPin, label: 'Visit Us', value: 'Tech Park, Sector 62', sub: 'Noida, UP 201301' },
+   628→              ].map((item) => (
+   629→                <div key={item.label} className="flex items-start gap-4">
+   630→                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+   631→                    <item.icon className="h-5 w-5" />
+   632→                  </div>
+   633→                  <div>
+   634→                    <div className="text-sm font-medium">{item.label}</div>
+   635→                    <div className="text-sm text-foreground">{item.value}</div>
+   636→                    <div className="text-xs text-muted-foreground">{item.sub}</div>
+   637→                  </div>
+   638→                </div>
+   639→              ))}
+   640→            </div>
+   641→            <div className="rounded-xl border border-primary/20 bg-primary/5 p-6">
+   642→              <h4 className="mb-2 font-semibold text-primary">Emergency Recovery?</h4>
+   643→              <p className="text-sm text-muted-foreground">For urgent data loss situations, call our emergency hotline for immediate priority service and same-day recovery options.</p>
+   644→            </div>
+   645→          </motion.div>
+   646→
+   647→          {/* Form */}
+   648→          <motion.div initial={{ opacity: 0, x: 20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5, delay: 0.2 }} className="lg:col-span-3">
+   649→            <Card className="glow-teal border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm shadow-sm">
+   650→              <CardContent className="p-6 sm:p-8">
+   651→                <form onSubmit={handleSubmit} className="space-y-5">
+   652→                  <div className="grid gap-5 sm:grid-cols-2">
+   653→                    <div className="space-y-2">
+   654→                      <Label htmlFor="name">Full Name *</Label>
+   655→                      <Input id="name" name="name" placeholder="Your full name" value={form.name} onChange={handleChange} required className="border-border/50 bg-background/50" />
+   656→                    </div>
+   657→                    <div className="space-y-2">
+   658→                      <Label htmlFor="email">Email Address *</Label>
+   659→                      <Input id="email" name="email" type="email" placeholder="you@example.com" value={form.email} onChange={handleChange} required className="border-border/50 bg-background/50" />
+   660→                    </div>
+   661→                  </div>
+   662→                  <div className="grid gap-5 sm:grid-cols-2">
+   663→                    <div className="space-y-2">
+   664→                      <Label htmlFor="phone">Phone Number *</Label>
+   665→                      <Input id="phone" name="phone" type="tel" placeholder="+91 98765 43210" value={form.phone} onChange={handleChange} required className="border-border/50 bg-background/50" />
+   666→                    </div>
+   667→                    <div className="space-y-2">
+   668→                      <Label htmlFor="deviceType">Device / Brand</Label>
+   669→                      <Input id="deviceType" name="deviceType" placeholder="e.g. Samsung 1TB HDD" value={form.deviceType} onChange={handleChange} className="border-border/50 bg-background/50" />
+   670→                    </div>
+   671→                  </div>
+   672→                  <div className="space-y-2">
+   673→                    <Label htmlFor="serviceType">Service Required *</Label>
+   674→                    <Select value={form.serviceType} onValueChange={(val) => setForm((p) => ({ ...p, serviceType: val }))}>
+   675→                      <SelectTrigger className="border-border/50 bg-background/50"><SelectValue placeholder="Select a recovery service" /></SelectTrigger>
+   676→                      <SelectContent>
+   677→                        {serviceOptions.map((opt) => (<SelectItem key={opt} value={opt}>{opt}</SelectItem>))}
+   678→                      </SelectContent>
+   679→                    </Select>
+   680→                  </div>
+   681→                  <div className="space-y-2">
+   682→                    <Label htmlFor="message">Describe Your Problem</Label>
+   683→                    <Textarea id="message" name="message" placeholder="Tell us what happened — how did you lose data? What files do you need recovered?" rows={4} value={form.message} onChange={handleChange} className="border-border/50 bg-background/50 resize-none" />
+   684→                  </div>
+   685→                  <Button type="submit" disabled={submitting} className="w-full bg-primary text-primary-foreground hover:bg-primary/90" size="lg">
+   686→                    {submitting ? (
+   687→                      <span className="flex items-center gap-2"><span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />Submitting...</span>
+   688→                    ) : (
+   689→                      <span className="flex items-center gap-2">Submit Request <ArrowRight className="h-4 w-4" /></span>
+   690→                    )}
+   691→                  </Button>
+   692→                  <p className="text-center text-xs text-muted-foreground">By submitting, you agree to our terms. Your information is 100% secure and will never be shared.</p>
+   693→                </form>
+   694→              </CardContent>
+   695→            </Card>
+   696→          </motion.div>
+   697→        </div>
+   698→      </div>
+   699→    </section>
+   700→  );
+   701→}
+   702→
+   703→/* ═══════════════════════════════════════════
+   704→   FOOTER
+   705→   ═══════════════════════════════════════════ */
+   706→function Footer({ onAdminClick }: { onAdminClick: () => void }) {
+   707→  return (
+   708→    <footer className="border-t border-border/50 bg-card/40 backdrop-blur-sm">
+   709→      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+   710→        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+   711→          <div className="space-y-4">
+   712→            <div className="flex items-center gap-2">
+   713→              <img src="/hero-bg.png" alt="DataRescue Pro Logo" className="h-8 w-8 rounded-lg object-cover" />
+   714→              <span className="font-bold">Data<span className="text-primary">Rescue</span> Pro</span>
+   715→            </div>
+   716→            <p className="text-sm leading-relaxed text-muted-foreground">India&apos;s most trusted data recovery service. We recover data from any device, any brand, any situation.</p>
+   717→          </div>
+   718→          <div className="space-y-4">
+   719→            <h4 className="text-sm font-semibold">Services</h4>
+   720→            <ul className="space-y-2 text-sm text-muted-foreground">
+   721→              {['Pendrive Recovery', 'HDD Recovery', 'SSD Recovery', 'Memory Card Recovery', 'RAID Recovery'].map((s) => (
+   722→                <li key={s}><a href="#services" className="transition-colors hover:text-primary">{s}</a></li>
+   723→              ))}
+   724→            </ul>
+   725→          </div>
+   726→          <div className="space-y-4">
+   727→            <h4 className="text-sm font-semibold">Company</h4>
+   728→            <ul className="space-y-2 text-sm text-muted-foreground">
+   729→              {['About Us', 'Our Team', 'Careers', 'Blog', 'Privacy Policy'].map((s) => (
+   730→                <li key={s}><a href="#" className="transition-colors hover:text-primary">{s}</a></li>
+   731→              ))}
+   732→            </ul>
+   733→          </div>
+   734→          <div className="space-y-4">
+   735→            <h4 className="text-sm font-semibold">Contact</h4>
+   736→            <ul className="space-y-2 text-sm text-muted-foreground">
+   737→              <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-primary" /> +91 98765 43210</li>
+   738→              <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-primary" /> support@datarescuepro.com</li>
+   739→              <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-primary" /> Noida, UP 201301</li>
+   740→            </ul>
+   741→          </div>
+   742→        </div>
+   743→        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-8 sm:flex-row">
+   744→          <p className="text-xs text-muted-foreground">&copy; {new Date().getFullYear()} DataRescue Pro. All rights reserved.</p>
+   745→          <button onClick={onAdminClick} className="text-xs text-muted-foreground transition-colors hover:text-primary flex items-center gap-1">
+   746→            <Lock className="h-3 w-3" /> Admin Panel
+   747→          </button>
+   748→        </div>
+   749→      </div>
+   750→    </footer>
+   751→  );
+   752→}
+   753→
+   754→/* ═══════════════════════════════════════════
+   755→   ADMIN PANEL
+   756→   ═══════════════════════════════════════════ */
+   757→interface Submission {
+   758→  id: string;
+   759→  name: string;
+   760→  email: string;
+   761→  phone: string;
+   762→  serviceType: string;
+   763→  deviceType: string;
+   764→  message: string;
+   765→  status: string;
+   766→  createdAt: string;
+   767→}
+   768→
+   769→function AdminPanel({ onClose }: { onClose: () => void }) {
+   770→  const { toast } = useToast();
+   771→  const [authenticated, setAuthenticated] = useState(false);
+   772→  const [username, setUsername] = useState('');
+   773→  const [password, setPassword] = useState('');
+   774→  const [showPw, setShowPw] = useState(false);
+   775→  const [submissions, setSubmissions] = useState<Submission[]>([]);
+   776→  const [loading, setLoading] = useState(false);
+   777→
+   778→  const fetchSubmissions = useCallback(async () => {
+   779→    setLoading(true);
+   780→    try {
+   781→      const res = await fetch('/api/contact');
+   782→      const data = await res.json();
+   783→      if (data.success) setSubmissions(data.data);
+   784→      else toast({ title: 'Error', description: 'Failed to fetch submissions.', variant: 'destructive' });
+   785→    } catch {
+   786→      toast({ title: 'Network Error', description: 'Could not connect to server.', variant: 'destructive' });
+   787→    } finally {
+   788→      setLoading(false);
+   789→    }
+   790→  }, [toast]);
+   791→
+   792→  useEffect(() => {
+   793→    if (authenticated) fetchSubmissions();
+   794→  }, [authenticated, fetchSubmissions]);
+   795→
+   796→  const handleLogin = (e: React.FormEvent) => {
+   797→    e.preventDefault();
+   798→    if (username === ADMIN_CREDS.username && password === ADMIN_CREDS.password) {
+   799→      setAuthenticated(true);
+   800→      toast({ title: 'Login Successful', description: 'Welcome, Admin!' });
+   801→    } else {
+   802→      toast({ title: 'Login Failed', description: 'Invalid username or password.', variant: 'destructive' });
+   803→    }
+   804→  };
+   805→
+   806→  const handleLogout = () => {
+   807→    setAuthenticated(false);
+   808→    setUsername('');
+   809→    setPassword('');
+   810→    onClose();
+   811→  };
+   812→
+   813→  const formatDate = (d: string) => {
+   814→    try { return new Date(d).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); }
+   815→    catch { return d; }
+   816→  };
+   817→
+   818→  /* ── Login Screen ── */
+   819→  if (!authenticated) {
+   820→    return (
+   821→      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+   822→        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
+   823→          <Card className="glow-teal border-border/50 bg-card/80 backdrop-blur-sm">
+   824→            <CardContent className="p-8">
+   825→              <div className="mb-8 text-center">
+   826→                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary">
+   827→                  <Lock className="h-7 w-7 text-primary-foreground" />
+   828→                </div>
+   829→                <h1 className="text-2xl font-bold">Admin Login</h1>
+   830→                <p className="mt-2 text-sm text-muted-foreground">Enter your credentials to access the admin panel</p>
+   831→              </div>
+   832→              <form onSubmit={handleLogin} className="space-y-5">
+   833→                <div className="space-y-2">
+   834→                  <Label htmlFor="admin-user">Username</Label>
+   835→                  <div className="relative">
+   836→                    <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+   837→                    <Input id="admin-user" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} required className="border-border/50 bg-background/50 pl-10" />
+   838→                  </div>
+   839→                </div>
+   840→                <div className="space-y-2">
+   841→                  <Label htmlFor="admin-pass">Password</Label>
+   842→                  <div className="relative">
+   843→                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+   844→                    <Input id="admin-pass" type={showPw ? 'text' : 'password'} placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required className="border-border/50 bg-background/50 pl-10 pr-10" />
+   845→                    <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" aria-label="Toggle password">
+   846→                      {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+   847→                    </button>
+   848→                  </div>
+   849→                </div>
+   850→                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" size="lg">Sign In</Button>
+   851→              </form>
+   852→              <div className="mt-6 text-center">
+   853→                <button onClick={onClose} className="text-sm text-muted-foreground hover:text-primary transition-colors">&larr; Back to Website</button>
+   854→              </div>
+   855→            </CardContent>
+   856→          </Card>
+   857→        </motion.div>
+   858→      </div>
+   859→    );
+   860→  }
+   861→
+   862→  /* ── Dashboard ── */
+   863→  const pending = submissions.filter(s => s.status === 'pending').length;
+   864→
+   865→  return (
+   866→    <div className="min-h-screen flex flex-col bg-background">
+   867→      {/* Admin Header */}
+   868→      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+   869→        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+   870→          <div className="flex items-center gap-3">
+   871→            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary"><Database className="h-5 w-5 text-primary-foreground" /></div>
+   872→            <div>
+   873→              <span className="font-bold">Data<span className="text-primary">Rescue</span> Pro</span>
+   874→              <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">Admin</span>
+   875→            </div>
+   876→          </div>
+   877→          <div className="flex items-center gap-3">
+   878→            <Button variant="outline" size="sm" onClick={fetchSubmissions} disabled={loading} className="border-border/50">
+   879→              <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
+   880→            </Button>
+   881→            <Button variant="outline" size="sm" onClick={onClose} className="border-border/50">
+   882→              <ArrowRight className="mr-1.5 h-3.5 w-3.5 rotate-180" /> Site
+   883→            </Button>
+   884→            <Button variant="outline" size="sm" onClick={handleLogout} className="border-destructive/50 text-destructive hover:bg-destructive/10">
+   885→              <LogOut className="mr-1.5 h-3.5 w-3.5" /> Logout
+   886→            </Button>
+   887→          </div>
+   888→        </div>
+   889→      </header>
+   890→
+   891→      {/* Content */}
+   892→      <main className="flex-1 p-4 sm:p-6 lg:p-8">
+   893→        <div className="mx-auto max-w-7xl">
+   894→          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+   895→            <h1 className="text-2xl font-bold sm:text-3xl">Submission Dashboard</h1>
+   896→            <p className="mt-1 text-muted-foreground">View and manage contact form submissions from your website.</p>
+   897→          </motion.div>
+   898→
+   899→          {/* Stats */}
+   900→          <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+   901→            <Card className="border-border/50 bg-card/60">
+   902→              <CardContent className="flex items-center gap-4 p-5">
+   903→                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary"><Users className="h-5 w-5" /></div>
+   904→                <div>
+   905→                  <div className="text-2xl font-bold">{submissions.length}</div>
+   906→                  <div className="text-xs text-muted-foreground">Total Submissions</div>
+   907→                </div>
+   908→              </CardContent>
+   909→            </Card>
+   910→            <Card className="border-border/50 bg-card/60">
+   911→              <CardContent className="flex items-center gap-4 p-5">
+   912→                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-yellow-500/10 text-yellow-500"><AlertCircle className="h-5 w-5" /></div>
+   913→                <div>
+   914→                  <div className="text-2xl font-bold">{pending}</div>
+   915→                  <div className="text-xs text-muted-foreground">Pending Review</div>
+   916→                </div>
+   917→              </CardContent>
+   918→            </Card>
+   919→            <Card className="border-border/50 bg-card/60 hidden sm:block">
+   920→              <CardContent className="flex items-center gap-4 p-5">
+   921→                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500"><CheckCircle className="h-5 w-5" /></div>
+   922→                <div>
+   923→                  <div className="text-2xl font-bold">{submissions.length - pending}</div>
+   924→                  <div className="text-xs text-muted-foreground">Reviewed</div>
+   925→                </div>
+   926→              </CardContent>
+   927→            </Card>
+   928→          </div>
+   929→
+   930→          {/* Table */}
+   931→          <Card className="border-border/50 bg-card/60 overflow-hidden">
+   932→            <CardContent className="p-0">
+   933→              {loading ? (
+   934→                <div className="flex items-center justify-center py-20">
+   935→                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
+   936→                </div>
+   937→              ) : submissions.length === 0 ? (
+   938→                <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+   939→                  <AlertCircle className="mb-3 h-10 w-10 opacity-30" />
+   940→                  <p className="text-sm">No submissions yet. They will appear here when users submit the contact form.</p>
+   941→                </div>
+   942→              ) : (
+   943→                <div className="overflow-x-auto">
+   944→                  <table className="w-full text-sm">
+   945→                    <thead>
+   946→                      <tr className="border-b border-border/50 bg-muted/30">
+   947→                        <th className="px-4 py-3 text-left font-semibold">#</th>
+   948→                        <th className="px-4 py-3 text-left font-semibold">Name</th>
+   949→                        <th className="px-4 py-3 text-left font-semibold hidden md:table-cell">Email</th>
+   950→                        <th className="px-4 py-3 text-left font-semibold hidden sm:table-cell">Phone</th>
+   951→                        <th className="px-4 py-3 text-left font-semibold">Service</th>
+   952→                        <th className="px-4 py-3 text-left font-semibold hidden lg:table-cell">Device</th>
+   953→                        <th className="px-4 py-3 text-left font-semibold">Status</th>
+   954→                        <th className="px-4 py-3 text-left font-semibold hidden xl:table-cell">Date</th>
+   955→                      </tr>
+   956→                    </thead>
+   957→                    <tbody>
+   958→                      {submissions.map((s, i) => (
+   959→                        <tr key={s.id} className="border-b border-border/30 transition-colors hover:bg-muted/20">
+   960→                          <td className="px-4 py-3 text-muted-foreground">{i + 1}</td>
+   961→                          <td className="px-4 py-3 font-medium">{s.name}</td>
+   962→                          <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{s.email}</td>
+   963→                          <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">{s.phone}</td>
+   964→                          <td className="px-4 py-3"><Badge variant="outline" className="border-primary/30 text-primary text-xs">{s.serviceType}</Badge></td>
+   965→                          <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">{s.deviceType || '—'}</td>
+   966→                          <td className="px-4 py-3">
+   967→                            <Badge variant={s.status === 'pending' ? 'outline' : 'secondary'} className={s.status === 'pending' ? 'border-yellow-500/30 text-yellow-500' : 'bg-emerald-500/10 text-emerald-500'}>
+   968→                              {s.status === 'pending' ? 'Pending' : 'Reviewed'}
+   969→                            </Badge>
+   970→                          </td>
+   971→                          <td className="px-4 py-3 text-muted-foreground hidden xl:table-cell">{formatDate(s.createdAt)}</td>
+   972→                        </tr>
+   973→                      ))}
+   974→                    </tbody>
+   975→                  </table>
+   976→                </div>
+   977→              )}
+   978→            </CardContent>
+   979→          </Card>
+   980→        </div>
+   981→      </main>
+   982→    </div>
+   983→  );
+   984→}
+   985→
+   986→/* ═══════════════════════════════════════════
+   987→   MAIN PAGE
+   988→   ═══════════════════════════════════════════ */
+   989→export default function Home() {
+   990→  const [showAdmin, setShowAdmin] = useState(false);
+   991→
+   992→  if (showAdmin) {
+   993→    return <AdminPanel onClose={() => setShowAdmin(false)} />;
+   994→  }
+   995→
+   996→  return (
+   997→    <div className="min-h-screen flex flex-col">
+   998→      <Navbar onAdminClick={() => setShowAdmin(true)} />
+   999→      <main className="flex-1">
+  1000→        <HeroSection />
+  1001→        <ServicesSection />
+  1002→        <WhyUsSection />
+  1003→        <ProcessSection />
+  1004→        <TestimonialsSection />
+  1005→        <CTABanner />
+  1006→        <ContactSection />
+  1007→      </main>
+  1008→      <Footer onAdminClick={() => setShowAdmin(true)} />
+  1009→    </div>
+  1010→  );
+  1011→}

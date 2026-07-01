@@ -153,7 +153,7 @@ function Navbar({ onAdminClick }: { onAdminClick: () => void }) {
    ═══════════════════════════════════════════ */
 function HeroSection() {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden pt-16">
+    <section className="relative flex min-h-screen items-center overflow-hidden pt-16 max-w-full">
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img src="/hero-bg.png" alt="" className="h-full w-full object-cover" />
@@ -298,7 +298,7 @@ function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="services" className="relative py-24 sm:py-32" ref={ref}>
+    <section id="services" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/services-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -322,14 +322,14 @@ function ServicesSection() {
             <motion.div key={service.title} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
               <Card className="glow-teal group h-full overflow-hidden border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 dark:hover:bg-card/90 shadow-sm">
                 {/* Image */}
-                <div className="relative h-44 overflow-hidden">
+                <div className="relative h-48 overflow-hidden bg-muted/30">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105 p-2"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
                   <div className="absolute bottom-3 left-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/90 text-primary-foreground shadow-lg">
                     <service.icon className="h-5 w-5" />
                   </div>
@@ -374,7 +374,7 @@ function WhyUsSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="why-us" className="relative py-24 sm:py-32" ref={ref}>
+    <section id="why-us" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/whyus-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -424,7 +424,7 @@ function ProcessSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="process" className="relative py-24 sm:py-32" ref={ref}>
+    <section id="process" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -474,7 +474,7 @@ function TestimonialsSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="testimonials" className="relative py-24 sm:py-32" ref={ref}>
+    <section id="testimonials" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/testimonials-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -525,7 +525,7 @@ function CTABanner() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section className="relative py-20" ref={ref}>
+    <section className="relative py-20 overflow-hidden max-w-full" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -597,7 +597,7 @@ function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32" ref={ref}>
+    <section id="contact" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/contact-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
