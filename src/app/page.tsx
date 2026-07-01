@@ -155,8 +155,13 @@ function Navbar({ onAdminClick }: { onAdminClick: () => void }) {
    ═══════════════════════════════════════════ */
 function HeroSection() {
   return (
-    <section className="hero-bg grid-bg relative flex min-h-screen items-center overflow-hidden pt-16">
-      <div className="absolute inset-0 overflow-hidden">
+    <section className="relative flex min-h-screen items-center overflow-hidden pt-16">
+      {/* Background image */}
+      <div className="absolute inset-0 z-0">
+        <img src="/hero-bg.png" alt="" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-background/75 dark:bg-background/80" />
+      </div>
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="animate-float absolute -top-20 -left-20 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
         <div className="animate-float-delayed absolute -right-20 top-1/3 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
         <div className="animate-pulse-glow absolute bottom-20 left-1/3 h-2 w-2 rounded-full bg-primary" />
@@ -164,7 +169,7 @@ function HeroSection() {
         <div className="animate-pulse-glow absolute top-60 left-1/4 h-1 w-1 rounded-full bg-teal-400" style={{ animationDelay: '2s' }} />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <Badge variant="outline" className="mb-6 border-primary/30 text-primary">
