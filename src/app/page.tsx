@@ -103,9 +103,7 @@ function Navbar({ onAdminClick }: { onAdminClick: () => void }) {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Database className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img src="/hero-bg.png" alt="DataRescue Pro Logo" className="h-9 w-9 rounded-lg object-cover" />
           <span className="text-lg font-bold tracking-tight">
             Data<span className="text-primary">Rescue</span> Pro
           </span>
@@ -690,7 +688,7 @@ function Footer({ onAdminClick }: { onAdminClick: () => void }) {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary"><Database className="h-4 w-4 text-primary-foreground" /></div>
+              <img src="/hero-bg.png" alt="DataRescue Pro Logo" className="h-8 w-8 rounded-lg object-cover" />
               <span className="font-bold">Data<span className="text-primary">Rescue</span> Pro</span>
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">India&apos;s most trusted data recovery service. We recover data from any device, any brand, any situation.</p>
