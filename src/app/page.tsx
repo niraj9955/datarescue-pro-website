@@ -157,7 +157,7 @@ function HeroSection() {
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img src="/hero-bg.png" alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-background/75 dark:bg-background/80" />
+        <div className="absolute inset-0 bg-white/[0.94] dark:bg-background/80" />
       </div>
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="animate-float absolute -top-20 -left-20 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
@@ -213,7 +213,7 @@ function HeroSection() {
                   { icon: ArchiveRestore, label: 'File Recovery', color: 'text-emerald-300' },
                 ].map((item, i) => (
                   <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + i * 0.1 }}>
-                    <Card className="border-border/50 bg-card/80 backdrop-blur-sm card-hover cursor-default">
+                    <Card className="border-border/50 bg-white dark:bg-card/80 backdrop-blur-sm card-hover cursor-default shadow-sm">
                       <CardContent className="flex flex-col items-center gap-3 p-6">
                         <item.icon className={`h-10 w-10 ${item.color}`} />
                         <span className="text-sm font-medium">{item.label}</span>
@@ -234,7 +234,7 @@ function HeroSection() {
             { value: '15+', label: 'Years Experience' },
             { value: '24/7', label: 'Emergency Support' },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-xl border border-border/50 bg-card/50 p-4 text-center backdrop-blur-sm">
+            <div key={stat.label} className="rounded-xl border border-border/50 bg-white dark:bg-card/50 p-4 text-center backdrop-blur-sm shadow-sm">
               <div className="text-2xl font-bold text-primary sm:text-3xl">{stat.value}</div>
               <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</div>
             </div>
@@ -301,7 +301,7 @@ function ServicesSection() {
     <section id="services" className="relative py-24 sm:py-32" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/services-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
@@ -320,7 +320,7 @@ function ServicesSection() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => (
             <motion.div key={service.title} initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
-              <Card className="glow-teal group h-full overflow-hidden border-border/50 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card/90">
+              <Card className="glow-teal group h-full overflow-hidden border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 dark:hover:bg-card/90 shadow-sm">
                 {/* Image */}
                 <div className="relative h-44 overflow-hidden">
                   <img
@@ -377,7 +377,7 @@ function WhyUsSection() {
     <section id="why-us" className="relative py-24 sm:py-32" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/whyus-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
@@ -392,7 +392,7 @@ function WhyUsSection() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {reasons.map((reason, i) => (
             <motion.div key={reason.title} initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
-              <div className="group flex gap-4 rounded-xl border border-border/50 bg-card/40 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-card/70">
+              <div className="group flex gap-4 rounded-xl border border-border/50 bg-white dark:bg-card/40 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 dark:hover:bg-card/70 shadow-sm">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                   <reason.icon className="h-6 w-6" />
                 </div>
@@ -427,7 +427,7 @@ function ProcessSection() {
     <section id="process" className="relative py-24 sm:py-32" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
@@ -477,7 +477,7 @@ function TestimonialsSection() {
     <section id="testimonials" className="relative py-24 sm:py-32" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/testimonials-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
@@ -490,7 +490,7 @@ function TestimonialsSection() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: i * 0.1 }}>
-              <Card className="glow-teal h-full border-border/50 bg-card/60 backdrop-blur-sm">
+              <Card className="glow-teal h-full border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm shadow-sm">
                 <CardContent className="p-6">
                   <div className="mb-4 flex gap-1">
                     {Array.from({ length: t.rating }).map((_, j) => (
@@ -528,7 +528,7 @@ function CTABanner() {
     <section className="relative py-20" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={isInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.5 }}
@@ -600,7 +600,7 @@ function ContactSection() {
     <section id="contact" className="relative py-24 sm:py-32" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/contact-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+        <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
@@ -646,7 +646,7 @@ function ContactSection() {
 
           {/* Form */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={isInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5, delay: 0.2 }} className="lg:col-span-3">
-            <Card className="glow-teal border-border/50 bg-card/60 backdrop-blur-sm">
+            <Card className="glow-teal border-border/50 bg-white dark:bg-card/60 backdrop-blur-sm shadow-sm">
               <CardContent className="p-6 sm:p-8">
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid gap-5 sm:grid-cols-2">
