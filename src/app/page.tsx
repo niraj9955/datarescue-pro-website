@@ -100,7 +100,7 @@ function Navbar({ onAdminClick }: { onAdminClick: () => void }) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 w-full z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#" className="flex items-center gap-2">
           <img src="/hero-bg.png" alt="DataRescue Pro Logo" className="h-9 w-9 rounded-lg object-cover" />
@@ -153,7 +153,7 @@ function Navbar({ onAdminClick }: { onAdminClick: () => void }) {
    ═══════════════════════════════════════════ */
 function HeroSection() {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden pt-16 max-w-full">
+    <section className="relative flex min-h-screen items-center overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img src="/hero-bg.png" alt="" className="h-full w-full object-cover" />
@@ -298,7 +298,7 @@ function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="services" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
+    <section id="services" className="relative py-24 sm:py-32 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/services-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -374,7 +374,7 @@ function WhyUsSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="why-us" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
+    <section id="why-us" className="relative py-24 sm:py-32 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/whyus-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -424,7 +424,7 @@ function ProcessSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="process" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
+    <section id="process" className="relative py-24 sm:py-32 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -474,7 +474,7 @@ function TestimonialsSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="testimonials" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
+    <section id="testimonials" className="relative py-24 sm:py-32 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/testimonials-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -525,7 +525,7 @@ function CTABanner() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section className="relative py-20 overflow-hidden max-w-full" ref={ref}>
+    <section className="relative py-20 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -597,7 +597,7 @@ function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32 overflow-hidden max-w-full" ref={ref}>
+    <section id="contact" className="relative py-24 sm:py-32 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 z-0">
         <img src="/sections/contact-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-white/[0.96] dark:bg-background/88" />
@@ -994,7 +994,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
       <Navbar onAdminClick={() => setShowAdmin(true)} />
       <main className="flex-1">
         <HeroSection />
