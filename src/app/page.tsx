@@ -299,7 +299,11 @@ function ServicesSection() {
 
   return (
     <section id="services" className="relative py-24 sm:py-32" ref={ref}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <img src="/sections/services-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
           <Badge variant="outline" className="mb-4 border-primary/30 text-primary">
             Our Services
@@ -371,8 +375,11 @@ function WhyUsSection() {
 
   return (
     <section id="why-us" className="relative py-24 sm:py-32" ref={ref}>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <img src="/sections/whyus-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
           <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Why Choose Us</Badge>
           <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -418,7 +425,11 @@ function ProcessSection() {
 
   return (
     <section id="process" className="relative py-24 sm:py-32" ref={ref}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
           <Badge variant="outline" className="mb-4 border-primary/30 text-primary">How It Works</Badge>
           <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -464,8 +475,11 @@ function TestimonialsSection() {
 
   return (
     <section id="testimonials" className="relative py-24 sm:py-32" ref={ref}>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <img src="/sections/testimonials-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
           <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Testimonials</Badge>
           <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -512,7 +526,11 @@ function CTABanner() {
 
   return (
     <section className="relative py-20" ref={ref}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <img src="/sections/process-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={isInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.5 }}
           className="glow-teal-strong relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-emerald-500/10 p-8 text-center sm:p-12"
         >
@@ -580,7 +598,11 @@ function ContactSection() {
 
   return (
     <section id="contact" className="relative py-24 sm:py-32" ref={ref}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <img src="/sections/contact-bg.png" alt="" className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute inset-0 bg-background/85 dark:bg-background/90" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="mb-16 text-center">
           <Badge variant="outline" className="mb-4 border-primary/30 text-primary">Get In Touch</Badge>
           <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
